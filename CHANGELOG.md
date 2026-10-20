@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-10-20
+
+### Breaking
+- `critical` means a training blocker. Non-normality is always a warning. Drift is critical only when the shift is large, not merely when the p-value is small.
+- `DatasetAnalyzer` and `hashprep scan` / `details` default to the `gate` preset. `hashprep report` defaults to `profile`. Pass `preset="profile"` or `--preset profile` for the previous full catalogue.
+- Sampling is off unless `--sample-size` or `auto_sample=True` is set.
+- `scan --json` now uses `schema_version`, `critical_count`, `warning_count`, `total_issues`, `issues`, and `sampling_info`. `details --json` prints the same object.
+- F-statistic leakage thresholds are ignored. Leakage uses correlation, bias-corrected Cramér's V, or correlation ratio.
+- Plots, HTML, and PDF require `pip install "hashprep[reports]"`. Parquet requires `pip install "hashprep[parquet]"`.
+
+### Added
+- Column roles (`target`, `identifier`, `boolean`, `categorical`, `numeric`, `datetime`, `text`) shared by every check.
+- `--preset`, `--fail-on`, and Parquet input.
+- `statistic` and `effect_size` on each issue.
+- Generated code escapes column names. Sklearn steps with the same transformation are grouped. Outlier clipping is a real pre-pipeline function.
+
 ## [0.1.0] - 2026-05-22
 
 ### Added

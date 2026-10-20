@@ -6,6 +6,7 @@ and is likely useless (or worse — noise) for a predictive model.
 
 from ..summaries.mutual_info import summarize_mutual_information
 from .core import Issue
+from .roles import column_roles
 
 
 def _check_low_mutual_information(analyzer) -> list[Issue]:
@@ -25,7 +26,10 @@ def _check_low_mutual_information(analyzer) -> list[Issue]:
     scores = mi_result["scores"]
     task = mi_result["task"]
 
+    roles = column_roles(analyzer)
     for col, score in scores.items():
+        if roles.get(col) in ("target", "identifier"):
+            continue
         if score < _cfg.low_mi_warning:
             issues.append(
                 Issue(

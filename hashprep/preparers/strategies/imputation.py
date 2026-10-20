@@ -21,8 +21,11 @@ class ImputationStrategy(FixStrategy):
 
         if method == ImputeMethod.MODE.value:
             lines = []
-            for col in suggestion.columns:
-                lines.append(f"df['{col}'] = df['{col}'].fillna(df['{col}'].mode().iloc[0])")
+            for index, col in enumerate(suggestion.columns):
+                ref = self._ref(col)
+                lines.append(f"_mode_{index} = {ref}.mode()")
+                lines.append(f"if not _mode_{index}.empty:")
+                lines.append(f"    {ref} = {ref}.fillna(_mode_{index}.iloc[0])")
             return "\n".join(lines)
 
         if method == ImputeMethod.CONSTANT.value:

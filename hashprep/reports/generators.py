@@ -18,17 +18,21 @@ def _load_generator(format_name):
 
         return JsonReport()
     elif format_name == "html":
-        from .html import HtmlReport
+        try:
+            from .html import HtmlReport
 
-        return HtmlReport()
+            return HtmlReport()
+        except ImportError as e:
+            raise ImportError("HTML reports require the reports extra: pip install 'hashprep[reports]'") from e
     elif format_name == "pdf":
         try:
             from .pdf import PdfReport
 
             return PdfReport()
         except Exception as e:
-            # Re-raise as a cleaner error for the CLI to catch
-            raise ImportError(f"PDF generation is unavailable because of a missing dependency: {e}") from e
+            raise ImportError(
+                f"PDF reports require the reports extra: pip install 'hashprep[reports]'. Underlying error: {e}"
+            ) from e
     return None
 
 

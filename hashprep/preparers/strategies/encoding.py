@@ -18,22 +18,17 @@ class EncodingStrategy(FixStrategy):
             return f"df = pd.get_dummies(df, columns={cols_str}, drop_first=True)"
 
         if method == EncodeMethod.LABEL.value:
-            lines = []
-            for col in cols:
-                lines.append(f"df['{col}'] = df['{col}'].astype('category').cat.codes")
-            return "\n".join(lines)
+            return "\n".join(f"{self._ref(col)} = {self._ref(col)}.astype('category').cat.codes" for col in cols)
 
         if method == EncodeMethod.ORDINAL.value:
-            lines = []
-            for col in cols:
-                lines.append(f"df['{col}'] = df['{col}'].astype('category').cat.codes")
-            return "\n".join(lines)
+            return "\n".join(f"{self._ref(col)} = {self._ref(col)}.astype('category').cat.codes" for col in cols)
 
         if method == EncodeMethod.FREQUENCY.value:
             lines = []
-            for col in cols:
-                lines.append(f"freq_{col} = df['{col}'].value_counts(normalize=True)")
-                lines.append(f"df['{col}_encoded'] = df['{col}'].map(freq_{col})")
+            for index, col in enumerate(cols):
+                ref = self._ref(col)
+                lines.append(f"_freq_{index} = {ref}.value_counts(normalize=True)")
+                lines.append(f"df[{(str(col) + '_encoded')!r}] = {ref}.map(_freq_{index})")
             return "\n".join(lines)
 
         return f"df = pd.get_dummies(df, columns={self._format_column_list(cols)})"

@@ -14,3 +14,7 @@ class Issue:
     impact_score: str  # high, medium, low
 
     quick_fix: str
+
+    statistic: float | None = None
+
+    effect_size: float | None = None

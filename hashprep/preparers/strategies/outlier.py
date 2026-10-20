@@ -14,43 +14,40 @@ class OutlierStrategy(FixStrategy):
         clip_method = suggestion.parameters.get("clip_method", "iqr")
 
         if clip_method == "iqr":
-            lines = []
-            for col in cols:
-                lines.append(f"q1_{col}, q3_{col} = df['{col}'].quantile([0.25, 0.75])")
-                lines.append(f"iqr_{col} = q3_{col} - q1_{col}")
-                lines.append(f"lower_{col}, upper_{col} = q1_{col} - 1.5 * iqr_{col}, q3_{col} + 1.5 * iqr_{col}")
-                lines.append(f"df['{col}'] = df['{col}'].clip(lower=lower_{col}, upper=upper_{col})")
-            return "\n".join(lines)
+            return self._generate_iqr_code(cols)
 
         if clip_method == "percentile":
             lower_pct = suggestion.parameters.get("lower_pct", 0.01)
             upper_pct = suggestion.parameters.get("upper_pct", 0.99)
             lines = []
-            for col in cols:
-                lines.append(f"low_{col}, high_{col} = df['{col}'].quantile([{lower_pct}, {upper_pct}])")
-                lines.append(f"df['{col}'] = df['{col}'].clip(lower=low_{col}, upper=high_{col})")
+            for index, col in enumerate(cols):
+                ref = self._ref(col)
+                lines.append(f"_low_{index}, _high_{index} = {ref}.quantile([{lower_pct}, {upper_pct}])")
+                lines.append(f"{ref} = {ref}.clip(lower=_low_{index}, upper=_high_{index})")
             return "\n".join(lines)
 
         if clip_method == "zscore":
             z_threshold = suggestion.parameters.get("z_threshold", 3.0)
             lines = []
-            for col in cols:
-                lines.append(f"mean_{col} = df['{col}'].mean()")
-                lines.append(f"std_{col} = df['{col}'].std()")
-                lines.append(f"lower_{col} = mean_{col} - {z_threshold} * std_{col}")
-                lines.append(f"upper_{col} = mean_{col} + {z_threshold} * std_{col}")
-                lines.append(f"df['{col}'] = df['{col}'].clip(lower=lower_{col}, upper=upper_{col})")
+            for index, col in enumerate(cols):
+                ref = self._ref(col)
+                lines.append(f"_mean_{index} = {ref}.mean()")
+                lines.append(f"_std_{index} = {ref}.std()")
+                lines.append(f"_lower_{index} = _mean_{index} - {z_threshold} * _std_{index}")
+                lines.append(f"_upper_{index} = _mean_{index} + {z_threshold} * _std_{index}")
+                lines.append(f"{ref} = {ref}.clip(lower=_lower_{index}, upper=_upper_{index})")
             return "\n".join(lines)
 
         return self._generate_iqr_code(cols)
 
     def _generate_iqr_code(self, cols: list[str]) -> str:
         lines = []
-        for col in cols:
-            lines.append(f"q1_{col}, q3_{col} = df['{col}'].quantile([0.25, 0.75])")
-            lines.append(f"iqr_{col} = q3_{col} - q1_{col}")
+        for index, col in enumerate(cols):
+            ref = self._ref(col)
+            lines.append(f"_q1_{index}, _q3_{index} = {ref}.quantile([0.25, 0.75])")
+            lines.append(f"_iqr_{index} = _q3_{index} - _q1_{index}")
             lines.append(
-                f"df['{col}'] = df['{col}'].clip(lower=q1_{col} - 1.5 * iqr_{col}, upper=q3_{col} + 1.5 * iqr_{col})"
+                f"{ref} = {ref}.clip(lower=_q1_{index} - 1.5 * _iqr_{index}, upper=_q3_{index} + 1.5 * _iqr_{index})"
             )
         return "\n".join(lines)
 

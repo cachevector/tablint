@@ -108,6 +108,12 @@ class DriftThresholds:
     critical_p_value: float = 0.001
     max_categories_for_chi2: int = 50
     max_new_category_samples: int = 5
+    # KS statistic. A tiny p-value without this shift is not drift.
+    ks_warning: float = 0.1
+    ks_critical: float = 0.25
+    # Total-variation distance between categorical distributions.
+    distance_warning: float = 0.1
+    distance_critical: float = 0.3
 
 
 @dataclass(frozen=True)

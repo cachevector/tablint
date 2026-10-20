@@ -5,6 +5,7 @@ Comprehensive tests for HashPrep CLI commands.
 import json
 import os
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -12,14 +13,13 @@ import pytest
 
 
 def has_pdf_deps():
-    try:
-        # We need to check if we can actually run a PDF report
-        from hashprep.reports.pdf import PdfReport
-
-        PdfReport()
-        return True
-    except Exception:
-        return False
+    # Probe in a child process. A broken WeasyPrint/Pango install can abort
+    # the interpreter, which a try/except in this process cannot catch.
+    probe = subprocess.run(
+        [sys.executable, "-c", "from hashprep.reports.pdf import PdfReport; PdfReport()"],
+        capture_output=True,
+    )
+    return probe.returncode == 0
 
 
 skip_pdf = pytest.mark.skipif(not has_pdf_deps(), reason="PDF dependencies missing")
@@ -40,7 +40,7 @@ def temp_output_dir():
 
 def run_cli(args, cwd=None):
     """Helper to run CLI commands."""
-    cmd = ["uv", "run", "hashprep"] + args
+    cmd = [sys.executable, "-m", "hashprep.interfaces.cli.main", *args]
     if cwd is None:
         cwd = Path(__file__).parent.parent
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd)
@@ -286,16 +286,16 @@ class TestCLIErrorHandling:
         assert result.returncode != 0
         assert "malformed" in result.stderr.lower()
 
-    def test_invalid_format(self, titanic_csv):
+    def test_invalid_format(self, titanic_csv, temp_output_dir):
         """Test with invalid report format."""
-        result = run_cli(["report", titanic_csv, "--format", "invalid"])
+        result = run_cli(["report", titanic_csv, "--format", "invalid"], cwd=temp_output_dir)
 
         # Should handle gracefully or error
         assert result.returncode != 0 or "error" in result.stderr.lower()
 
-    def test_invalid_check_name(self, titanic_csv):
+    def test_invalid_check_name(self, titanic_csv, temp_output_dir):
         """Test with invalid check name."""
-        result = run_cli(["report", titanic_csv, "--checks", "invalid_check_name"])
+        result = run_cli(["report", titanic_csv, "--checks", "invalid_check_name"], cwd=temp_output_dir)
 
         assert result.returncode == 0
         assert "Warning: Invalid checks ignored" in result.stdout

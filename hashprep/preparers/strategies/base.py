@@ -26,7 +26,9 @@ class FixStrategy(ABC):
         return self.SKLEARN_IMPORTS
 
     def _format_column_list(self, columns: list[str]) -> str:
-        """Format column list as Python literal."""
-        if len(columns) == 1:
-            return f"['{columns[0]}']"
-        return str(columns)
+        """Format column names as a Python literal. Names are escaped."""
+        return repr(list(columns))
+
+    def _ref(self, column: str) -> str:
+        """DataFrame column expression that is safe for any column name."""
+        return f"df[{column!r}]"

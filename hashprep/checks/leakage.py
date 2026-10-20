@@ -1,9 +1,10 @@
 import numpy as np
 import pandas as pd
-from scipy.stats import chi2_contingency, f_oneway
 
 from ..utils.logging import get_logger
 from .core import Issue
+from .correlations import _cramers_v_corrected
+from .roles import column_roles, columns_with_roles
 
 _log = get_logger("checks.leakage")
 
@@ -39,107 +40,110 @@ def _check_data_leakage(analyzer):
     return issues
 
 
+def _association_severity(value: float, warning: float, critical: float) -> str | None:
+    if not np.isfinite(value):
+        return None
+    if value >= critical:
+        return "critical"
+    if value >= warning:
+        return "warning"
+    return None
+
+
+def _correlation_ratio(labels: pd.Series, values: pd.Series) -> float:
+    """Return eta, in [0, 1], for a numeric feature against a categorical target."""
+    frame = pd.DataFrame({"label": labels, "value": pd.to_numeric(values, errors="coerce")}).dropna()
+    if len(frame) < 3:
+        return 0.0
+    overall = float(frame["value"].mean())
+    ss_total = float(((frame["value"] - overall) ** 2).sum())
+    if ss_total == 0:
+        return 0.0
+    ss_between = 0.0
+    for _, group in frame.groupby("label", observed=True):
+        ss_between += len(group) * (float(group["value"].mean()) - overall) ** 2
+    return float(np.sqrt(ss_between / ss_total))
+
+
+def _append_leakage(issues: list[Issue], column: str, severity: str, description: str, effect: float) -> None:
+    issues.append(
+        Issue(
+            category="target_leakage",
+            severity=severity,
+            column=column,
+            description=description,
+            impact_score="high" if severity == "critical" else "medium",
+            statistic=effect,
+            effect_size=effect,
+            quick_fix=_LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX,
+        )
+    )
+
+
 def _check_target_leakage_patterns(analyzer):
+    """Flag near-deterministic association with the target.
+
+    Numeric pairs use absolute Pearson correlation. Categorical pairs use
+    bias-corrected Cramér's V. Mixed pairs use the correlation ratio (eta).
+    Ordinary predictive signal stays below the warning thresholds.
+    """
     _leak = analyzer.config.leakage
     issues = []
-    if analyzer.target_col and analyzer.target_col in analyzer.df.columns:
-        target = analyzer.df[analyzer.target_col]
-        # Numeric target
-        if pd.api.types.is_numeric_dtype(target):
-            numeric_cols = analyzer.df.select_dtypes(include="number").drop(
-                columns=[analyzer.target_col], errors="ignore"
-            )
-            if not numeric_cols.empty:
-                corrs = numeric_cols.corrwith(target).abs()
-                for col, corr in corrs.items():
-                    severity = (
-                        "critical"
-                        if corr > _leak.numeric_critical
-                        else "warning"
-                        if corr > _leak.numeric_warning
-                        else None
-                    )
-                    if severity:
-                        impact = "high" if severity == "critical" else "medium"
-                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
-                        issues.append(
-                            Issue(
-                                category="target_leakage",
-                                severity=severity,
-                                column=col,
-                                description=f"Column '{col}' highly correlated with target ({float(corr):.2f})",
-                                impact_score=impact,
-                                quick_fix=quick_fix,
-                            )
-                        )
-        # Categorical target
+    if not analyzer.target_col or analyzer.target_col not in analyzer.df.columns:
+        return issues
+
+    target = analyzer.df[analyzer.target_col]
+    roles = column_roles(analyzer)
+    target_is_numeric = roles.get(analyzer.target_col) == "target" and (
+        pd.api.types.is_numeric_dtype(target)
+        and target.nunique(dropna=True) > analyzer.config.type_inference.num_low_cat_threshold
+    )
+
+    for col in columns_with_roles(analyzer, "numeric"):
+        if target_is_numeric:
+            paired = pd.DataFrame({col: analyzer.df[col], "target": target}).dropna()
+            if len(paired) < 3 or paired[col].std(ddof=0) == 0 or paired["target"].std(ddof=0) == 0:
+                continue
+            effect = float(paired[col].corr(paired["target"]))
+            effect = abs(effect)
+            warning, critical = _leak.numeric_warning, _leak.numeric_critical
+            label = "correlation"
         else:
-            cat_cols = analyzer.df.select_dtypes(include="object").drop(columns=[analyzer.target_col], errors="ignore")
-            for col in cat_cols.columns:
-                try:
-                    table = pd.crosstab(target, analyzer.df[col])
-                    chi2, _, _, _ = chi2_contingency(table)
-                    n = table.sum().sum()
-                    phi2 = chi2 / n
-                    r, k = table.shape
-                    cramers_v = np.sqrt(phi2 / min(k - 1, r - 1))
-                    severity = (
-                        "critical"
-                        if cramers_v > _leak.categorical_critical
-                        else "warning"
-                        if cramers_v > _leak.categorical_warning
-                        else None
-                    )
-                    if severity:
-                        impact = "high" if severity == "critical" else "medium"
-                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
-                        issues.append(
-                            Issue(
-                                category="target_leakage",
-                                severity=severity,
-                                column=col,
-                                description=f"Column '{col}' highly associated with target (Cramer's V: {float(cramers_v):.2f})",
-                                impact_score=impact,
-                                quick_fix=quick_fix,
-                            )
-                        )
-                except (ValueError, np.linalg.LinAlgError) as e:
-                    _log.debug("Chi-square leakage test failed for '%s': %s", col, e)
-                    continue
-            numeric_cols = analyzer.df.select_dtypes(include="number").drop(
-                columns=[analyzer.target_col], errors="ignore"
+            effect = _correlation_ratio(target, analyzer.df[col])
+            warning, critical = _leak.numeric_warning, _leak.numeric_critical
+            label = "correlation ratio"
+        severity = _association_severity(effect, warning, critical)
+        if severity:
+            _append_leakage(
+                issues,
+                col,
+                severity,
+                f"Column '{col}' is nearly determined by the target ({label}: {effect:.2f})",
+                effect,
             )
-            for col in numeric_cols.columns:
-                groups = [
-                    analyzer.df.loc[target == level, col].dropna().to_numpy()
-                    for level in target.dropna().unique()
-                    if len(analyzer.df.loc[target == level, col].dropna()) > 1
-                ]
-                if len(groups) < 2 or all(np.var(g, ddof=1) == 0 for g in groups):
-                    continue
-                try:
-                    f_stat, p_val = f_oneway(*groups)
-                    severity = (
-                        "critical"
-                        if f_stat > _leak.f_stat_critical and p_val < _leak.f_stat_p_value
-                        else "warning"
-                        if f_stat > _leak.f_stat_warning and p_val < _leak.f_stat_p_value
-                        else None
-                    )
-                    if severity:
-                        impact = "high" if severity == "critical" else "medium"
-                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
-                        issues.append(
-                            Issue(
-                                category="target_leakage",
-                                severity=severity,
-                                column=col,
-                                description=f"Column '{col}' strongly associated with target (F: {float(f_stat):.2f}, p: {float(p_val):.4f})",
-                                impact_score=impact,
-                                quick_fix=quick_fix,
-                            )
-                        )
-                except (ValueError, RuntimeWarning) as e:
-                    _log.debug("F-test leakage check failed for '%s': %s", col, e)
-                    continue
+
+    for col in columns_with_roles(analyzer, "categorical", "boolean"):
+        if target_is_numeric:
+            effect = _correlation_ratio(analyzer.df[col], target)
+            warning, critical = _leak.numeric_warning, _leak.numeric_critical
+            label = "correlation ratio"
+        else:
+            try:
+                table = pd.crosstab(target, analyzer.df[col])
+                effect = float(_cramers_v_corrected(table))
+            except (ValueError, np.linalg.LinAlgError, ZeroDivisionError) as e:
+                _log.debug("Cramer's V leakage test failed for '%s': %s", col, e)
+                continue
+            warning, critical = _leak.categorical_warning, _leak.categorical_critical
+            label = "Cramer's V"
+        severity = _association_severity(effect, warning, critical)
+        if severity:
+            _append_leakage(
+                issues,
+                col,
+                severity,
+                f"Column '{col}' is nearly determined by the target ({label}: {effect:.2f})",
+                effect,
+            )
+
     return issues

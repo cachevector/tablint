@@ -2,14 +2,13 @@
 
 ## Supported Versions
 
-hashprep has reached a stable `0.1.0` release. Only the latest minor release is supported for security updates.
+Only the latest minor release is supported for security updates.
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| `0.1.0`    | :white_check_mark: |
+| `0.2.x`    | :white_check_mark: |
+| `0.1.0`    | :x:                |
 | `< 0.1.0`  | :x:                |
-
-Once hashprep reaches a stable `0.1.0` release, this table will be updated to reflect supported minor versions.
 
 ## Reporting a Vulnerability
 

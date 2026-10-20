@@ -27,7 +27,7 @@
 </div>
 
 > [!NOTE]
-> HashPrep is now in its first stable release (v0.1.0). Core features are fully tested with CI.
+> HashPrep 0.2.0 is the production gate release. `critical` means "do not train this table as-is."
 
 ## Overview
 
@@ -48,7 +48,7 @@ Key features include:
 - **ML-Specific Checks**: Identify data leakage, dataset drift, class imbalance, and high-cardinality features.
 - **Automated Preparation**: Get suggestions for encoding, imputation, scaling, and transformations.
 - **Rich Reporting**: Generate statistical summaries and exportable reports (HTML/PDF/Markdown/JSON) with embedded visualizations.
-- **Production-Ready Pipelines**: Output reproducible cleaning and preprocessing code (`fixes.py`) that integrates seamlessly with ML workflows.
+- **Reviewed preparation code**: Write a pandas cleaning script and a scikit-learn pipeline. Fit the pipeline on the training split. The pandas script computes statistics from the frame you pass in.
 - **Modern Themes**: Choose between "Minimal" (professional) and "Neubrutalism" (bold) report styles.
 
 ---
@@ -97,14 +97,16 @@ hashprep scan dataset.csv
 - `--target COLUMN`: Specify target column for ML-specific checks
 - `--checks CHECKS`: Run specific checks (comma-separated)
 - `--comparison FILE`: Compare with another dataset for drift detection
-- `--sample-size N`: Limit analysis to N rows
-- `--no-sample`: Disable automatic sampling
+- `--preset {gate,profile}`: `gate` is the default and is the training-blocker set. `profile` runs every check.
+- `--fail-on {critical,warning}`: Exit 2 when that severity is present. Exit 0 means the bar was not hit. Exit 1 is a usage or runtime error.
+- `--sample-size N`: Analyze at most N rows. Sampling stays off unless this is set.
+- `--no-sample`: Disable sampling even when `--sample-size` is set.
 - `--config FILE`: Load thresholds from a YAML/TOML/JSON config file
 
 **Example:**
 ```bash
-# Scan with target column and specific checks
-hashprep scan train.csv --target Survived --checks outliers,high_missing_values,class_imbalance
+# Block a training job when the table is not trainable
+hashprep scan train.csv --target Survived --preset gate --fail-on critical
 
 # Quick scan with JSON output
 hashprep scan dataset.csv --json --quiet
@@ -139,8 +141,9 @@ hashprep report dataset.csv --format html --theme minimal
 - `--target COLUMN`: Specify target column
 - `--checks CHECKS`: Run specific checks
 - `--comparison FILE`: Compare with another dataset for drift detection
-- `--sample-size N`: Limit analysis to N rows
-- `--no-sample`: Disable automatic sampling
+- `--preset {gate,profile}`: `profile` is the default for reports. `gate` runs only training blockers.
+- `--sample-size N`: Analyze at most N rows. Sampling stays off unless this is set.
+- `--no-sample`: Disable sampling even when `--sample-size` is set.
 - `--config FILE`: Load thresholds from a YAML/TOML/JSON config file
 
 **Examples:**
@@ -403,6 +406,35 @@ if 'sampling_info' in summary:
     info = summary['sampling_info']
     print(f"Sampled: {info['sample_fraction']*100:.1f}%")
 ```
+
+---
+
+## Production gate
+
+`DatasetAnalyzer` defaults to the `gate` preset. `hashprep report` defaults to `profile`.
+
+`critical` is reserved for defects that should stop a training job: an empty table, an all-null column, missingness at or above the critical threshold, infinite values, duplicate rows above the critical ratio, a column identical or nearly identical to the target, and drift whose effect size is large. Skew, non-normality, ordinary correlation with the target, and zero-inflation of a binary target are warnings, and most of them run only in the `profile` preset.
+
+Stable keys in `analyze()` and in `scan --json` / `details --json`:
+
+- `schema_version` (`"0.2"`), `critical_count`, `warning_count`, `total_issues`
+- `issues[]`: `category`, `severity`, `column`, `description`, `impact_score`, `quick_fix`, `statistic`, `effect_size`
+- `sampling_info`
+
+`summaries` and plots are best-effort and can change without a major version.
+
+```bash
+hashprep scan train.csv --target Survived --preset gate --fail-on critical --json
+```
+
+Exit 2 when `--fail-on` matches. A job that only checks the exit code should pass `--fail-on critical`.
+
+### Limitations
+
+- Input is CSV, or Parquet when `hashprep[parquet]` is installed. HTML, PDF, and plots need `hashprep[reports]`.
+- Leakage means near-deterministic association with the target, not a proof that a column was built from the label.
+- Sampling is off unless you pass `--sample-size` or `auto_sample=True`. Checks then describe the analyzed frame, which is the full table by default.
+- Generated pandas code learns fill values from the frame you pass. Pass the training split, or fit the generated sklearn pipeline on that split.
 
 ---
 

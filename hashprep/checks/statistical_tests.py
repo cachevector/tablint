@@ -7,6 +7,7 @@ import numpy as np
 from scipy.stats import levene, normaltest, shapiro
 
 from .core import Issue
+from .roles import columns_with_roles
 
 
 def _run_normality_test(series, shapiro_max_n: int) -> tuple[str, float, float]:
@@ -32,7 +33,7 @@ def _check_normality(analyzer) -> list[Issue]:
     _cfg = analyzer.config.statistical_tests
     issues = []
 
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col].dropna()
         n = len(series)
         if n < _cfg.normality_min_n:
@@ -43,18 +44,19 @@ def _check_normality(analyzer) -> list[Issue]:
         test_name, stat, p_val = _run_normality_test(series, _cfg.shapiro_max_n)
 
         if p_val < _cfg.normality_p_value:
-            # Severity: very small p → critical (strong evidence), otherwise warning
-            severity = "critical" if p_val < 0.001 else "warning"
-            impact = "high" if severity == "critical" else "medium"
+            # Non-normal features are not a training blocker. Trees ignore this,
+            # and linear models care about residuals rather than raw columns.
             test_label = "Shapiro-Wilk" if test_name == "shapiro_wilk" else "D'Agostino-Pearson"
 
             issues.append(
                 Issue(
                     category="normality",
-                    severity=severity,
+                    severity="warning",
                     column=col,
                     description=(f"Column '{col}' is non-normal ({test_label}: stat={stat:.4f}, p={p_val:.4g}, n={n})"),
-                    impact_score=impact,
+                    impact_score="medium",
+                    statistic=stat,
+                    effect_size=p_val,
                     quick_fix=(
                         "Options:\n"
                         "- Transform: Log, sqrt, or Box-Cox/Yeo-Johnson often normalise skewed data.\n"
@@ -87,10 +89,7 @@ def _check_variance_homogeneity(analyzer) -> list[Issue]:
     target = analyzer.df[analyzer.target_col].dropna()
     groups_labels = target.unique()
 
-    for col in analyzer.df.select_dtypes(include="number").columns:
-        if col == analyzer.target_col:
-            continue
-
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col]
 
         # Build per-group arrays, filtering out groups that are too small
@@ -113,19 +112,19 @@ def _check_variance_homogeneity(analyzer) -> list[Issue]:
             # Compute per-group stds to add colour to the description
             stds = [float(np.std(g, ddof=1)) for g in groups]
             std_ratio = max(stds) / min(stds) if min(stds) > 0 else float("inf")
-            severity = "critical" if std_ratio > 3.0 else "warning"
-            impact = "high" if severity == "critical" else "medium"
 
             issues.append(
                 Issue(
                     category="variance_homogeneity",
-                    severity=severity,
+                    severity="warning",
                     column=col,
                     description=(
                         f"Column '{col}' has unequal variances across '{analyzer.target_col}' groups "
                         f"(Levene: stat={stat:.4f}, p={p_val:.4g}; std ratio={std_ratio:.2f}×)"
                     ),
-                    impact_score=impact,
+                    impact_score="medium",
+                    statistic=float(stat),
+                    effect_size=None if std_ratio == float("inf") else float(std_ratio),
                     quick_fix=(
                         "Options:\n"
                         "- Scale per class: Normalise within each target group before training.\n"

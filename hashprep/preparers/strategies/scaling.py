@@ -21,11 +21,12 @@ class ScalingStrategy(FixStrategy):
 
         if method == ScaleMethod.ROBUST.value:
             lines = []
-            for col in suggestion.columns:
-                lines.append(f"q1_{col} = df['{col}'].quantile(0.25)")
-                lines.append(f"q3_{col} = df['{col}'].quantile(0.75)")
-                lines.append(f"iqr_{col} = q3_{col} - q1_{col}")
-                lines.append(f"df['{col}'] = (df['{col}'] - df['{col}'].median()) / iqr_{col}")
+            for index, col in enumerate(suggestion.columns):
+                ref = self._ref(col)
+                lines.append(f"_q1_{index} = {ref}.quantile(0.25)")
+                lines.append(f"_q3_{index} = {ref}.quantile(0.75)")
+                lines.append(f"_iqr_{index} = _q3_{index} - _q1_{index}")
+                lines.append(f"{ref} = ({ref} - {ref}.median()) / _iqr_{index}")
             return "\n".join(lines)
 
         if method == ScaleMethod.MAXABS.value:

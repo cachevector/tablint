@@ -8,6 +8,7 @@ from scipy.stats import chi2_contingency, mannwhitneyu
 from ..config import DEFAULT_CONFIG
 from ..utils.logging import get_logger
 from .core import Issue
+from .roles import column_roles
 
 _log = get_logger("checks.missing_values")
 
@@ -90,13 +91,33 @@ def _check_missing_patterns(analyzer):
     missing_cols = [
         col for col in analyzer.df.columns if int(analyzer.df[col].isna().sum()) >= _cfg.pattern_min_missing_count
     ]
+    roles = column_roles(analyzer)
+
+    def _association_kind(col: str) -> str:
+        role = roles.get(col)
+        if role == "numeric":
+            return "numeric"
+        if role in ("categorical", "boolean", "text"):
+            return "categorical"
+        if role == "target":
+            series = analyzer.df[col].dropna()
+            if (
+                pd.api.types.is_numeric_dtype(series)
+                and series.nunique() > analyzer.config.type_inference.num_low_cat_threshold
+            ):
+                return "numeric"
+            return "categorical"
+        return "skip"
+
+    categorical_others = [col for col in analyzer.df.columns if _association_kind(col) == "categorical"]
+    numeric_others = [col for col in analyzer.df.columns if _association_kind(col) == "numeric"]
 
     # grouping logic
     cat_patterns = defaultdict(list)  # (missing_col, correlated_col, p_val, cramers_v)
     num_patterns = defaultdict(list)  # (missing_col, correlated_col, p_val, cohens_d)
 
     for col in missing_cols:
-        for other_col in analyzer.df.select_dtypes(include=["object", "category"]).columns:
+        for other_col in categorical_others:
             if col == other_col:
                 continue
             try:
@@ -130,7 +151,7 @@ def _check_missing_patterns(analyzer):
                 _log.debug("Chi-square test failed for '%s' vs '%s': %s", col, other_col, e)
                 continue
 
-        for other_col in analyzer.df.select_dtypes(include=["int64", "float64"]).columns:
+        for other_col in numeric_others:
             if col == other_col:
                 continue
             try:

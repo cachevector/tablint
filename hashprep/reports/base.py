@@ -1,5 +1,16 @@
 """Base report class with shared logic for all report renderers."""
 
+from jinja2 import Environment
+
+# String templates are HTML. Autoescape dataset text. Callers mark pandas
+# to_html() output with `| safe` because those tables are already escaped.
+_HTML_ENV = Environment(autoescape=True)
+
+
+def render_html(source: str, context: dict) -> str:
+    """Render an HTML report template with autoescaping enabled."""
+    return _HTML_ENV.from_string(source).render(context)
+
 
 class BaseReport:
     ALERT_TYPE_MAPPING = {

@@ -1,17 +1,16 @@
 from datetime import datetime
 
 import pandas as pd
-from jinja2 import Template
 from weasyprint import HTML
 
 import hashprep
 
-from .base import BaseReport
+from .base import BaseReport, render_html
 
 
 class PdfReport(BaseReport):
     def generate(self, summary, full=False, output_file=None, **kwargs):
-        template = Template(self._get_template())
+        template_str = self._get_template()
 
         head_df = pd.DataFrame(summary["summaries"]["head"])
         tail_df = pd.DataFrame(summary["summaries"]["tail"])
@@ -53,7 +52,7 @@ class PdfReport(BaseReport):
             "missing_plots": summary["summaries"].get("plots", {}),
         }
 
-        html_content = template.render(context)
+        html_content = render_html(template_str, context)
         pdf_content = HTML(string=html_content).write_pdf()
         if output_file:
             with open(output_file, "wb") as f:

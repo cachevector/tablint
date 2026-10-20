@@ -36,8 +36,66 @@ class PipelineBuilder:
             if s.fix_type == FixType.CLIP_OUTLIERS:
                 s.parameters["pre_pipeline"] = True
 
+    def _grouped_suggestions(self) -> list[FixSuggestion]:
+        """Merge compatible column-wise steps and drop columns that are removed."""
+        dropped = {col for s in self.suggestions if s.fix_type == FixType.DROP_COLUMN for col in s.columns}
+        grouped: list[FixSuggestion] = []
+        index: dict[tuple, FixSuggestion] = {}
+
+        for suggestion in self.suggestions:
+            if suggestion.fix_type == FixType.DROP_DUPLICATES:
+                grouped.append(suggestion)
+                continue
+
+            columns = [
+                col for col in suggestion.columns if suggestion.fix_type == FixType.DROP_COLUMN or col not in dropped
+            ]
+            if not columns:
+                continue
+
+            key = (
+                suggestion.fix_type,
+                suggestion.method,
+                tuple(sorted((name, repr(value)) for name, value in suggestion.parameters.items())),
+            )
+            existing = index.get(key)
+            if existing is not None and suggestion.fix_type != FixType.DROP_DUPLICATES:
+                for col in columns:
+                    if col not in existing.columns:
+                        existing.columns.append(col)
+                continue
+
+            clone = FixSuggestion(
+                fix_type=suggestion.fix_type,
+                columns=list(columns),
+                method=suggestion.method,
+                parameters=dict(suggestion.parameters),
+                priority=suggestion.priority,
+                reason=suggestion.reason,
+                source_issue_category=suggestion.source_issue_category,
+            )
+            index[key] = clone
+            grouped.append(clone)
+        return grouped
+
+    def _step_name(self, suggestion: FixSuggestion, seen_names: set[str]) -> str:
+        raw = (
+            suggestion.fix_type.value
+            if suggestion.method is None
+            else f"{suggestion.fix_type.value}_{suggestion.method}"
+        )
+        base_name = "".join(char if char.isalnum() else "_" for char in raw) or "step"
+        name = base_name
+        counter = 1
+        while name in seen_names:
+            name = f"{base_name}_{counter}"
+            counter += 1
+        seen_names.add(name)
+        return name
+
     def generate_pipeline_code(self) -> str:
         """Generate sklearn pipeline code as a string."""
+        self._active = self._grouped_suggestions()
         code: list[str] = []
 
         code.append('"""')
@@ -62,8 +120,7 @@ class PipelineBuilder:
         else:
             code.append("    transformers = [")
             for name, transformer_code, columns in transformers:
-                cols_str = str(columns)
-                code.append(f"        ('{name}', {transformer_code}, {cols_str}),")
+                code.append(f"        ({name!r}, {transformer_code}, {list(columns)!r}),")
             code.append("    ]")
             code.append("")
             code.append("    preprocessor = ColumnTransformer(")
@@ -87,14 +144,26 @@ class PipelineBuilder:
         code.append('    """')
         code.append("    steps = []")
 
-        pre_pipeline = [s for s in self.suggestions if s.parameters.get("pre_pipeline")]
+        pre_pipeline = [s for s in self._active if s.parameters.get("pre_pipeline")]
+        clip_columns: list[str] = []
         for s in pre_pipeline:
             if s.fix_type == FixType.DROP_DUPLICATES:
                 code.append("    steps.append(('drop_duplicates', lambda df: df.drop_duplicates()))")
             elif s.fix_type == FixType.CLIP_OUTLIERS:
-                cols = s.columns
-                code.append(f"    # Outlier clipping for {cols}")
-                code.append(f"    steps.append(('clip_outliers_{cols[0]}', None))  # Implement manually")
+                for col in s.columns:
+                    if col not in clip_columns:
+                        clip_columns.append(col)
+        if clip_columns:
+            code.append("    def _clip_outliers(df):")
+            code.append("        df = df.copy()")
+            code.append(f"        for _col in {clip_columns!r}:")
+            code.append("            _series = df[_col]")
+            code.append("            if pd.api.types.is_numeric_dtype(_series):")
+            code.append("                _lo = _series.quantile(0.01)")
+            code.append("                _hi = _series.quantile(0.99)")
+            code.append("                df[_col] = _series.clip(lower=_lo, upper=_hi)")
+            code.append("        return df")
+            code.append("    steps.append(('clip_outliers', _clip_outliers))")
 
         code.append("    return steps")
         code.append("")
@@ -118,8 +187,10 @@ class PipelineBuilder:
             "from sklearn.compose import ColumnTransformer",
             "import numpy as np",
         }
+        if any(s.fix_type == FixType.CLIP_OUTLIERS for s in getattr(self, "_active", self.suggestions)):
+            imports.add("import pandas as pd")
 
-        for suggestion in self.suggestions:
+        for suggestion in getattr(self, "_active", self.suggestions):
             if suggestion.parameters.get("pre_pipeline"):
                 continue
             strategy = self.STRATEGY_MAP.get(suggestion.fix_type)
@@ -133,7 +204,7 @@ class PipelineBuilder:
         transformers: list[tuple[str, str, list[str]]] = []
         seen_names: set[str] = set()
 
-        for suggestion in self.suggestions:
+        for suggestion in getattr(self, "_active", self.suggestions):
             if suggestion.parameters.get("pre_pipeline"):
                 continue
 
@@ -145,18 +216,7 @@ class PipelineBuilder:
             if transformer_code is None:
                 continue
 
-            base_name = f"{suggestion.fix_type.value}"
-            if suggestion.columns:
-                base_name = f"{suggestion.fix_type.value}_{suggestion.columns[0][:10]}"
-
-            name = base_name
-            counter = 1
-            while name in seen_names:
-                name = f"{base_name}_{counter}"
-                counter += 1
-            seen_names.add(name)
-
-            transformers.append((name, transformer_code, columns))
+            transformers.append((self._step_name(suggestion, seen_names), transformer_code, columns))
 
         return transformers
 
@@ -171,10 +231,11 @@ class PipelineBuilder:
         except ImportError:
             return None
 
+        self._active = self._grouped_suggestions()
         transformers = []
         seen_names: set[str] = set()
 
-        for suggestion in self.suggestions:
+        for suggestion in self._active:
             if suggestion.parameters.get("pre_pipeline"):
                 continue
 
@@ -182,19 +243,7 @@ class PipelineBuilder:
             if transformer is None:
                 continue
 
-            columns = suggestion.columns
-            base_name = f"{suggestion.fix_type.value}"
-            if columns:
-                base_name = f"{suggestion.fix_type.value}_{columns[0][:10]}"
-
-            name = base_name
-            counter = 1
-            while name in seen_names:
-                name = f"{base_name}_{counter}"
-                counter += 1
-            seen_names.add(name)
-
-            transformers.append((name, transformer, columns))
+            transformers.append((self._step_name(suggestion, seen_names), transformer, suggestion.columns))
 
         if not transformers:
             return None

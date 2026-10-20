@@ -1,6 +1,7 @@
 from scipy.stats import kstest
 
 from .core import Issue
+from .roles import columns_with_roles
 
 
 def _check_uniform_distribution(analyzer) -> list[Issue]:
@@ -11,7 +12,7 @@ def _check_uniform_distribution(analyzer) -> list[Issue]:
     _cfg = analyzer.config.distribution
     issues = []
 
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col].dropna()
         if len(series) < _cfg.uniform_min_samples:
             continue
@@ -53,7 +54,7 @@ def _check_unique_values(analyzer) -> list[Issue]:
     _cfg = analyzer.config.distribution
     issues = []
 
-    for col in analyzer.df.columns:
+    for col in columns_with_roles(analyzer, "identifier"):
         series = analyzer.df[col].dropna()
         if len(series) < _cfg.unique_min_samples:
             continue

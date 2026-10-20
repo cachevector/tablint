@@ -195,8 +195,8 @@ class TestAnalyzerCustomConfig:
         assert "missing_values" in categories
 
     def test_skewness_threshold_respected(self):
-        # Highly skewed data — lower the threshold to catch it with warning=0.5
-        data = [1.0] * 90 + [100.0] * 10
+        # Continuous skew. Two-valued numeric columns are categorical and are not skew-tested.
+        data = np.random.default_rng(0).exponential(scale=1.0, size=400)
         df = pd.DataFrame({"x": data})
         custom = config_from_dict({"outliers": {"skewness_warning": 0.5, "skewness_critical": 20.0}})
         analyzer = DatasetAnalyzer(df, auto_sample=False, config=custom, selected_checks=["skewness"])

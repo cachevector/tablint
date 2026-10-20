@@ -26,7 +26,7 @@ source .venv/bin/activate
 ### Install in development mode
 
 ```bash
-uv sync --extra dev 
+uv sync --group dev --all-extras 
 ```
 
 <!-- To keep your fork updated:

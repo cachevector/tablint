@@ -3,17 +3,15 @@ from datetime import datetime
 
 import pandas as pd
 import yaml
-from jinja2 import Template
 
 import hashprep
 
-from .base import BaseReport
+from .base import BaseReport, render_html
 
 
 class HtmlReport(BaseReport):
     def generate(self, summary, full=False, output_file=None, theme="minimal", pdf_mode=False):
         template_str = self._get_template(theme)
-        template = Template(template_str)
 
         head_df = pd.DataFrame(summary["summaries"]["head"])
         tail_df = pd.DataFrame(summary["summaries"]["tail"])
@@ -68,7 +66,7 @@ class HtmlReport(BaseReport):
             "json_dump": lambda x: json.dumps(x, indent=2),
         }
 
-        html_content = template.render(context)
+        html_content = render_html(template_str, context)
         if output_file:
             with open(output_file, "w") as f:
                 f.write(html_content)

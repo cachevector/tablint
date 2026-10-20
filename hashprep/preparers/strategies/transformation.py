@@ -28,16 +28,18 @@ class TransformationStrategy(FixStrategy):
                 "from scipy.stats import boxcox",
             ]
             for col in suggestion.columns:
-                lines.append(f"df['{col}'], _ = boxcox(df['{col}'].clip(lower=1e-10).values)")
+                ref = self._ref(col)
+                lines.append(f"{ref} = boxcox({ref}.clip(lower=1e-10).to_numpy())[0]")
             return "\n".join(lines)
 
         if method == TransformMethod.YEOJOHNSON.value:
             lines = [
                 "from sklearn.preprocessing import PowerTransformer",
-                "pt = PowerTransformer(method='yeo-johnson')",
+                "_pt = PowerTransformer(method='yeo-johnson')",
             ]
             for col in suggestion.columns:
-                lines.append(f"df[['{col}']] = pt.fit_transform(df[['{col}']])")
+                ref = self._ref(col)
+                lines.append(f"{ref} = _pt.fit_transform(df.loc[:, [{col!r}]]).ravel()")
             return "\n".join(lines)
 
         return f"df[{cols}] = np.log1p(df[{cols}].clip(lower=0))"

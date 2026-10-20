@@ -1,20 +1,21 @@
 import numpy as np
 import pandas as pd
 
-from ..config import DEFAULT_CONFIG
 from .core import Issue
-
-_THRESHOLDS = DEFAULT_CONFIG.outliers
+from .roles import columns_with_roles
 
 
 def _check_outliers(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col].dropna()
         if len(series) == 0:
             continue
-        z_scores = (series - series.mean()) / series.std(ddof=0)
+        std = float(series.std(ddof=0))
+        if std == 0 or not np.isfinite(std):
+            continue
+        z_scores = (series - series.mean()) / std
         outlier_count = int((abs(z_scores) > _cfg.z_score).sum())
         if outlier_count > 0:
             outlier_ratio = float(outlier_count / len(series))
@@ -41,7 +42,7 @@ def _check_outliers(analyzer):
 def _check_high_zero_counts(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col].dropna()
         if len(series) == 0:
             continue
@@ -70,7 +71,7 @@ def _check_high_zero_counts(analyzer):
 def _check_extreme_text_lengths(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="object").columns:
+    for col in columns_with_roles(analyzer, "text"):
         series = analyzer.df[col].dropna().astype(str)
         if series.empty:
             continue
@@ -100,7 +101,7 @@ def _check_extreme_text_lengths(analyzer):
 def _check_skewness(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col].dropna()
         if len(series) < _cfg.min_sample_size:
             continue
@@ -131,7 +132,7 @@ def _check_skewness(analyzer):
 def _check_datetime_skew(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="datetime64").columns:
+    for col in columns_with_roles(analyzer, "datetime"):
         series = pd.to_datetime(analyzer.df[col], errors="coerce").dropna()
         if series.empty:
             continue
@@ -153,9 +154,9 @@ def _check_datetime_skew(analyzer):
 def _check_infinite_values(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="number").columns:
+    for col in columns_with_roles(analyzer, "numeric"):
         series = analyzer.df[col]
-        inf_count = int(np.isinf(series).sum())
+        inf_count = int(np.isinf(series.to_numpy(dtype=float)).sum())
         if inf_count > 0:
             inf_ratio = inf_count / len(series)
             severity = "critical" if inf_ratio > _cfg.infinite_ratio_critical else "warning"
@@ -181,7 +182,7 @@ def _check_infinite_values(analyzer):
 def _check_constant_length(analyzer):
     _cfg = analyzer.config.outliers
     issues = []
-    for col in analyzer.df.select_dtypes(include="object").columns:
+    for col in columns_with_roles(analyzer, "text"):
         series = analyzer.df[col].dropna().astype(str)
         if len(series) < _cfg.min_sample_size:
             continue

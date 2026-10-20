@@ -1,4 +1,5 @@
 from .core import Issue
+from .roles import columns_with_roles
 
 
 def _check_single_value_columns(analyzer):
@@ -28,7 +29,7 @@ def _check_single_value_columns(analyzer):
 def _check_high_cardinality(analyzer):
     _cfg = analyzer.config.columns
     issues = []
-    categorical_cols = analyzer.df.select_dtypes(include="object").columns.tolist()
+    categorical_cols = columns_with_roles(analyzer, "categorical", "text", "boolean")
     for col in categorical_cols:
         unique_count = int(analyzer.df[col].nunique())
         unique_ratio = float(unique_count / len(analyzer.df))

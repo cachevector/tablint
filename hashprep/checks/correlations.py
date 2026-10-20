@@ -7,6 +7,7 @@ from scipy.stats import chi2_contingency, kendalltau, pearsonr, spearmanr
 from ..utils.type_inference import is_usable_for_corr
 from .core import Issue
 from .discretizer import DiscretizationType, Discretizer
+from .roles import column_roles
 
 
 def _cramers_v_corrected(table: pd.DataFrame) -> float:
@@ -35,16 +36,14 @@ def calculate_correlations(analyzer, thresholds=None):
     if thresholds is None:
         thresholds = _cfg.as_nested_dict()
 
-    inferred_types = analyzer.column_types  # Use analyzer.column_types for inferred types dict
+    roles = column_roles(analyzer)
     issues = []
 
-    numeric_cols = [
-        col for col, typ in inferred_types.items() if typ == "Numeric" and is_usable_for_corr(analyzer.df[col])
-    ]
+    numeric_cols = [col for col, role in roles.items() if role == "numeric" and is_usable_for_corr(analyzer.df[col])]
     cat_cols = [
         col
-        for col, typ in inferred_types.items()
-        if typ == "Categorical"
+        for col, role in roles.items()
+        if role in ("categorical", "boolean")
         and 1 < analyzer.df[col].nunique() <= _cfg.max_distinct_categories
         and is_usable_for_corr(analyzer.df[col])
     ]

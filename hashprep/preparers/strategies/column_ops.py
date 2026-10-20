@@ -22,7 +22,7 @@ class DuplicateRemovalStrategy(FixStrategy):
 
     def generate_pandas_code(self, suggestion: FixSuggestion) -> str:
         keep = suggestion.parameters.get("keep", "first")
-        return f"df = df.drop_duplicates(keep='{keep}')"
+        return f"df = df.drop_duplicates(keep={keep!r})"
 
     def get_sklearn_transformer(self, suggestion: FixSuggestion) -> tuple[str | None, list[str]]:
         return None, []

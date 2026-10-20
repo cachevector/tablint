@@ -20,15 +20,9 @@ from ..summaries import (
 )
 from ..summaries.mutual_info import summarize_mutual_information
 from ..utils.sampling import DatasetSampler, SamplingConfig
-from ..utils.type_inference import infer_types
-from .visualizations import (
-    plot_bar,
-    plot_heatmap,
-    plot_histogram,
-    plot_missing_bar,
-    plot_missing_heatmap,
-    plot_scatter,
-)
+from ..utils.type_inference import infer_roles, infer_types
+
+SCHEMA_VERSION = "0.2"
 
 
 class DatasetAnalyzer:
@@ -66,6 +60,22 @@ class DatasetAnalyzer:
         "low_mutual_information",
     ]
 
+    # Actionable subset. Critical here means the table should not be trained as-is.
+    GATE_CHECKS = [
+        "empty_dataset",
+        "high_missing_values",
+        "empty_columns",
+        "dataset_missingness",
+        "duplicates",
+        "single_value_columns",
+        "infinite_values",
+        "unique_values",
+        "data_leakage",
+        "target_leakage_patterns",
+        "class_imbalance",
+        "dataset_drift",
+    ]
+
     def __init__(
         self,
         df: pd.DataFrame,
@@ -74,8 +84,9 @@ class DatasetAnalyzer:
         include_plots: bool = False,
         comparison_df: pd.DataFrame | None = None,
         sampling_config: SamplingConfig | None = None,
-        auto_sample: bool = True,
+        auto_sample: bool = False,
         config: HashPrepConfig | None = None,
+        preset: str = "gate",
     ):
         if not isinstance(df, pd.DataFrame):
             raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
@@ -85,14 +96,18 @@ class DatasetAnalyzer:
             raise ValueError(f"Target column '{target_col}' not found in DataFrame")
         if comparison_df is not None and not isinstance(comparison_df, pd.DataFrame):
             raise TypeError(f"comparison_df must be a pandas DataFrame, got {type(comparison_df).__name__}")
+        if preset not in ("gate", "profile"):
+            raise ValueError(f"Unknown preset '{preset}'. Use 'gate' or 'profile'.")
 
         self.config = config if config is not None else DEFAULT_CONFIG
         self.comparison_df = comparison_df
         self.target_col = target_col
         self.selected_checks = selected_checks
         self.include_plots = include_plots
+        self.preset = preset
         self.issues: list = []
         self.summaries: dict = {}
+        self._memory_exceeded = _memory_mb(df) > self.config.sampling.memory_threshold_mb
 
         self.sampler: DatasetSampler | None = None
         if auto_sample:
@@ -107,7 +122,13 @@ class DatasetAnalyzer:
             self.df = df
             self.df_full = df
 
-        self.column_types = infer_types(self.df)
+        self.column_types = infer_types(self.df, config=self.config)
+        self.column_roles = infer_roles(
+            self.df,
+            self.column_types,
+            target_col=self.target_col,
+            config=self.config,
+        )
 
     def analyze(self) -> dict:
         """Run all summaries and checks, return summary."""
@@ -135,17 +156,15 @@ class DatasetAnalyzer:
             if mi_result:
                 self.summaries["mutual_information"] = mi_result
 
-        if self.sampler:
-            self.summaries["sampling_info"] = self.sampler.get_sampling_info()
+        self.summaries["sampling_info"] = self._sampling_info()
 
         if self.include_plots:
             self._generate_plots()
 
-        checks_to_run = (
-            self.ALL_CHECKS
-            if self.selected_checks is None
-            else [check for check in self.selected_checks if check in self.ALL_CHECKS]
-        )
+        if self.selected_checks is None:
+            checks_to_run = self.GATE_CHECKS if self.preset == "gate" else list(self.ALL_CHECKS)
+        else:
+            checks_to_run = [check for check in self.selected_checks if check in self.ALL_CHECKS]
         self.issues = run_checks(self, checks_to_run)
 
         analysis_end = datetime.now()
@@ -157,6 +176,18 @@ class DatasetAnalyzer:
         return self._generate_summary()
 
     def _generate_plots(self):
+        try:
+            from .visualizations import (
+                plot_bar,
+                plot_heatmap,
+                plot_histogram,
+                plot_missing_bar,
+                plot_missing_heatmap,
+                plot_scatter,
+            )
+        except ImportError as e:
+            raise ImportError("Plots require the reports extra: pip install 'hashprep[reports]'") from e
+
         for col, stats in self.summaries["variables"].items():
             plots = {}
             if stats["category"] == "Numeric":
@@ -204,6 +235,7 @@ class DatasetAnalyzer:
         warning_issues = [i for i in self.issues if i.severity == "warning"]
 
         summary = {
+            "schema_version": SCHEMA_VERSION,
             "critical_count": len(critical_issues),
             "warning_count": len(warning_issues),
             "total_issues": len(self.issues),
@@ -215,14 +247,46 @@ class DatasetAnalyzer:
                     "description": issue.description,
                     "impact_score": issue.impact_score,
                     "quick_fix": issue.quick_fix,
+                    "statistic": _finite_float(issue.statistic),
+                    "effect_size": _finite_float(issue.effect_size),
                 }
                 for issue in self.issues
             ],
             "summaries": self.summaries,
             "column_types": self.column_types,
+            "column_roles": self.column_roles,
+            "sampling_info": self._sampling_info(),
         }
 
-        if self.sampler:
-            summary["sampling_info"] = self.sampler.get_sampling_info()
-
         return summary
+
+    def _sampling_info(self) -> dict:
+        if self.sampler:
+            info = self.sampler.get_sampling_info()
+        else:
+            info = {
+                "was_sampled": False,
+                "original_rows": int(self.df_full.shape[0]),
+                "original_cols": int(self.df_full.shape[1]),
+                "sample_fraction": 1.0,
+                "sample_method": None,
+                "max_rows": self.config.sampling.max_rows,
+            }
+        info["memory_exceeded"] = self._memory_exceeded
+        return info
+
+
+def _memory_mb(df: pd.DataFrame) -> float:
+    return float(df.memory_usage(deep=True).sum() / (1024**2))
+
+
+def _finite_float(value) -> float | None:
+    if value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if number != number or number in (float("inf"), float("-inf")):
+        return None
+    return number
