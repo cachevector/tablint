@@ -38,7 +38,7 @@
     <div class="section-header">
       <h2>Profile, debug, and fix<br />your datasets in seconds</h2>
       <p class="section-subtitle">
-        HashPrep catches critical issues before they derail your ML pipeline,
+        Tablint catches critical issues before they derail your ML pipeline,
         explains the problems, and suggests context-aware fixes.
       </p>
     </div>

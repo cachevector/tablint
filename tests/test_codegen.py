@@ -1,7 +1,7 @@
 """Tests for code generation module."""
 
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.models import (
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.models import (
     EncodeMethod,
     FixSuggestion,
     FixType,

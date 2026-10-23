@@ -2,15 +2,34 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.models import (
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.models import (
     EncodeMethod,
     FixSuggestion,
     FixType,
     ImputeMethod,
     ScaleMethod,
 )
-from hashprep.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.pipeline_builder import PipelineBuilder
+
+
+def test_hostile_column_name_does_not_execute_injected_code(capfd):
+    column = "a']; print('injected')"
+    suggestions = [
+        FixSuggestion(
+            fix_type=FixType.IMPUTE,
+            columns=[column],
+            method=ImputeMethod.MEDIAN.value,
+            reason="Missing",
+        )
+    ]
+    frame = pd.DataFrame({column: [1.0, np.nan, 3.0]})
+    namespace: dict = {}
+    exec(CodeGenerator(suggestions).generate_pandas_script(), namespace)
+    result = namespace["apply_fixes"](frame.copy())
+    assert result[column].isna().sum() == 0
+    captured = capfd.readouterr()
+    assert "injected" not in captured.out
 
 
 def test_execute_pandas_fixes():

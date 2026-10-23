@@ -1,29 +1,30 @@
 """
-Comprehensive tests for HashPrep library API usage.
+Comprehensive tests for Tablint library API usage.
 Tests all features when used as a Python library.
 """
 
 import os
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
-from hashprep import DatasetAnalyzer
-from hashprep.reports import generate_report
-from hashprep.utils.sampling import SamplingConfig
+from tablint import DatasetAnalyzer
+from tablint.reports import generate_report
+from tablint.utils.sampling import SamplingConfig
 
 
 def has_pdf_deps():
-    try:
-        from hashprep.reports.pdf import PdfReport
-
-        # Try to initialize it to catch weasyprint dependency issues
-        PdfReport()
-        return True
-    except Exception:
-        return False
+    # Probe in a child process. A broken WeasyPrint/Pango install can abort
+    # the interpreter, which a try/except in this process cannot catch.
+    probe = subprocess.run(
+        [sys.executable, "-c", "from tablint.reports.pdf import PdfReport; PdfReport()"],
+        capture_output=True,
+    )
+    return probe.returncode == 0
 
 
 skip_pdf = pytest.mark.skipif(not has_pdf_deps(), reason="PDF dependencies (weasyprint/libgobject) missing")
@@ -204,7 +205,7 @@ class TestReportGeneration:
             with open(output_file) as f:
                 content = f.read()
                 assert "<html" in content
-                assert "HashPrep" in content or "Quality Report" in content
+                assert "Tablint" in content or "Quality Report" in content
         finally:
             if os.path.exists(output_file):
                 os.remove(output_file)
@@ -296,8 +297,9 @@ class TestChecks:
         """Test outlier detection."""
         df = pd.DataFrame(
             {
-                "normal": range(100),
-                "with_outliers": list(range(95)) + [1000, 2000, 3000, 4000, 5000],
+                "normal": list(range(17)) * 5,
+                # Repeats keep this a numeric measurement rather than an identifier.
+                "with_outliers": list(range(20)) * 4 + [1000, 2000, 3000, 4000, 5000],
             }
         )
 

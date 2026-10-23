@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep import DatasetAnalyzer, HashPrepConfig, load_config
-from hashprep.config import DEFAULT_CONFIG, config_from_dict
+from tablint import DatasetAnalyzer, TablintConfig, load_config
+from tablint.config import DEFAULT_CONFIG, config_from_dict
 
 # ---------------------------------------------------------------------------
 # config_from_dict
@@ -53,9 +53,9 @@ class TestConfigFromDict:
         with pytest.raises(ValueError, match="Unknown configuration key"):
             config_from_dict({"outliers": {"z_score": 3.0, "nonexistent": 99}})
 
-    def test_returns_hashprepconfig_instance(self):
+    def test_returns_tablintconfig_instance(self):
         cfg = config_from_dict({})
-        assert isinstance(cfg, HashPrepConfig)
+        assert isinstance(cfg, TablintConfig)
 
     def test_result_is_frozen(self):
         cfg = config_from_dict({"outliers": {"z_score": 2.0}})
@@ -195,8 +195,8 @@ class TestAnalyzerCustomConfig:
         assert "missing_values" in categories
 
     def test_skewness_threshold_respected(self):
-        # Highly skewed data — lower the threshold to catch it with warning=0.5
-        data = [1.0] * 90 + [100.0] * 10
+        # Continuous skew. Two-valued numeric columns are categorical and are not skew-tested.
+        data = np.random.default_rng(0).exponential(scale=1.0, size=400)
         df = pd.DataFrame({"x": data})
         custom = config_from_dict({"outliers": {"skewness_warning": 0.5, "skewness_critical": 20.0}})
         analyzer = DatasetAnalyzer(df, auto_sample=False, config=custom, selected_checks=["skewness"])

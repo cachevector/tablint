@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --group dev --all-extras
 
       - name: Run tests
         run: uv run pytest tests/ -v --tb=short
@@ -40,7 +40,7 @@ jobs:
         run: uv python install 3.12
 
       - name: Install dependencies
-        run: uv sync --dev
+        run: uv sync --group dev --all-extras
 
       - name: Run ruff check
         run: uv run ruff check .
@@ -64,6 +64,14 @@ jobs:
 
       - name: Check build artifacts
         run: uvx twine check dist/*
+
+      - name: Smoke test the core wheel
+        run: |
+          uv venv /tmp/tablint-smoke
+          uv pip install --python /tmp/tablint-smoke/bin/python dist/*.whl
+          status=0
+          /tmp/tablint-smoke/bin/tablint scan datasets/train.csv --target Survived --preset gate --fail-on critical --json || status=$?
+          test "$status" -eq 2
 
   web-check:
     runs-on: ubuntu-latest

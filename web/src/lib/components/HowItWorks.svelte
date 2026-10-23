@@ -3,19 +3,19 @@
     {
       step: '01',
       title: 'Scan',
-      command: 'hashprep scan dataset.csv',
+      command: 'tablint scan dataset.csv',
       description: 'Run a quick scan to get a summary of critical issues in your terminal. Add --target to enable ML-specific checks.',
     },
     {
       step: '02',
       title: 'Analyze',
-      command: 'hashprep details dataset.csv --target Survived',
+      command: 'tablint details dataset.csv --target Survived',
       description: 'Get comprehensive details about all detected issues including outliers, missing values, class imbalance, and data leakage.',
     },
     {
       step: '03',
       title: 'Report & Fix',
-      command: 'hashprep report dataset.csv --format html --with-code',
+      command: 'tablint report dataset.csv --format html --with-code',
       description: 'Generate rich HTML/PDF reports with visualizations and auto-generated Python fix scripts and sklearn pipelines.',
     },
   ];

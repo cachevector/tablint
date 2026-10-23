@@ -27,7 +27,7 @@ function getSystemTheme(): Theme {
 
 function getStoredPreference(): 'light' | 'dark' | 'system' {
   if (!browser) return 'system';
-  return (safeLocalStorage('get', 'hashprep-theme') as 'light' | 'dark' | 'system') || 'system';
+  return (safeLocalStorage('get', 'tablint-theme') as 'light' | 'dark' | 'system') || 'system';
 }
 
 let preference = $state<'light' | 'dark' | 'system'>(getStoredPreference());
@@ -47,7 +47,7 @@ function apply(t: Theme) {
 function setPreference(pref: 'light' | 'dark' | 'system') {
   preference = pref;
   if (browser) {
-    safeLocalStorage('set', 'hashprep-theme', pref);
+    safeLocalStorage('set', 'tablint-theme', pref);
   }
   apply(pref === 'system' ? getSystemTheme() : pref);
 }

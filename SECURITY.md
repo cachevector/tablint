@@ -2,23 +2,21 @@
 
 ## Supported Versions
 
-hashprep has reached a stable `0.1.0` release. Only the latest minor release is supported for security updates.
+Only the latest minor release is supported for security updates.
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| `0.1.0`    | :white_check_mark: |
-| `< 0.1.0`  | :x:                |
-
-Once hashprep reaches a stable `0.1.0` release, this table will be updated to reflect supported minor versions.
+| `0.1.0b1`  | :white_check_mark: |
+| `< 0.1.0b1`| :x:                |
 
 ## Reporting a Vulnerability
 
-If you believe you have found a security vulnerability in hashprep (the Python package, the CLI, or the documentation website under `web/`), **please do not open a public GitHub issue**.
+If you believe you have found a security vulnerability in tablint (the Python package, the CLI, or the documentation website under `web/`), **please do not open a public GitHub issue**.
 
 Instead, report it privately through one of the following channels:
 
-- **GitHub Private Vulnerability Reporting** — preferred. Open a report at <https://github.com/cachevector/hashprep/security/advisories/new>.
-- **Email** — `aftaab@aftaab.xyz` with the subject line `hashprep security report`.
+- **GitHub Private Vulnerability Reporting** — preferred. Open a report at <https://github.com/cachevector/tablint/security/advisories/new>.
+- **Email** — `aftaab@aftaab.xyz` with the subject line `tablint security report`.
 
 Please include as much of the following as you can:
 
@@ -37,12 +35,12 @@ Please include as much of the following as you can:
 
 In scope:
 
-- The `hashprep` Python package and CLI.
+- The `tablint` Python package and CLI.
 - The documentation site in `web/`.
 - Build, packaging, and release tooling in this repository.
 
 Out of scope:
 
-- Vulnerabilities in third-party dependencies — please report those upstream. If a dependency issue affects hashprep users, we still appreciate a heads-up so we can bump the pinned version.
+- Vulnerabilities in third-party dependencies — please report those upstream. If a dependency issue affects tablint users, we still appreciate a heads-up so we can bump the pinned version.
 - Issues that require physical access to a user's machine or already-compromised environments.
 - Denial of service caused by passing intentionally malformed datasets far outside the documented usage (e.g., multi-TB crafted inputs on a laptop).

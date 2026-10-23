@@ -1,0 +1,180 @@
+from itertools import combinations
+
+import numpy as np
+import pandas as pd
+from scipy.stats import chi2_contingency, kendalltau, pearsonr, spearmanr
+
+from ..utils.type_inference import is_usable_for_corr
+from .core import Issue
+from .discretizer import DiscretizationType, Discretizer
+from .roles import column_roles
+
+
+def _cramers_v_corrected(table: pd.DataFrame) -> float:
+    if table.empty or (table.shape[0] == 1 or table.shape[1] == 1):
+        return 0.0
+    chi2 = chi2_contingency(table, correction=True)[0]
+    n = table.sum().sum()
+    phi2 = chi2 / n
+    r, k = table.shape
+    with np.errstate(divide="ignore", invalid="ignore"):
+        phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (n - 1))
+        rcorr = r - ((r - 1) ** 2) / (n - 1)
+        kcorr = k - ((k - 1) ** 2) / (n - 1)
+        rkcorr = min((kcorr - 1), (rcorr - 1))
+        if rkcorr == 0:
+            return 1.0
+        return np.sqrt(phi2corr / rkcorr)
+
+
+def calculate_correlations(analyzer, thresholds=None):
+    """
+    Compute correlations using internal defaults: Spearman + Pearson for numerics,
+    with Kendall added automatically for low-cardinality pairs.
+    """
+    _cfg = analyzer.config.correlations
+    if thresholds is None:
+        thresholds = _cfg.as_nested_dict()
+
+    roles = column_roles(analyzer)
+    issues = []
+
+    numeric_cols = [col for col, role in roles.items() if role == "numeric" and is_usable_for_corr(analyzer.df[col])]
+    cat_cols = [
+        col
+        for col, role in roles.items()
+        if role in ("categorical", "boolean")
+        and 1 < analyzer.df[col].nunique() <= _cfg.max_distinct_categories
+        and is_usable_for_corr(analyzer.df[col])
+    ]
+
+    issues.extend(_check_numeric_correlation(analyzer, numeric_cols, thresholds["numeric"]))
+    issues.extend(_check_categorical_correlation(analyzer, cat_cols, thresholds["categorical"]))
+    issues.extend(_check_mixed_correlation(analyzer, numeric_cols, cat_cols, thresholds["mixed"]))
+
+    return issues
+
+
+def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict):
+    _cfg = analyzer.config.correlations
+    issues = []
+    if len(numeric_cols) < 2:
+        return issues
+
+    num_df = analyzer.df[numeric_cols].dropna(how="all")
+
+    for col1, col2 in combinations(numeric_cols, 2):
+        series1, series2 = num_df[col1].dropna(), num_df[col2].dropna()
+        common_idx = series1.index.intersection(series2.index)
+        if len(common_idx) < 2:
+            continue
+        series1, series2 = series1.loc[common_idx], series2.loc[common_idx]
+
+        # Spearman (default, robust)
+        spearman_corr, spearman_p = spearmanr(series1, series2)
+        spearman_corr = abs(spearman_corr)
+
+        # Pearson (linear, for comparison)
+        pearson_corr, pearson_p = pearsonr(series1, series2)
+        pearson_corr = abs(pearson_corr)
+
+        # Kendall (only for low-cardinality numerics)
+        kendall_corr, kendall_p = None, None
+        is_low_card = (
+            series1.nunique() <= _cfg.low_cardinality_numeric or series2.nunique() <= _cfg.low_cardinality_numeric
+        )
+        if is_low_card:
+            kendall_corr, kendall_p = kendalltau(series1, series2)
+            kendall_corr = abs(kendall_corr)
+
+        # Flag if any metric exceeds threshold
+        metrics = [
+            ("Spearman", spearman_corr, spearman_p, thresholds["spearman"]),
+            ("Pearson", pearson_corr, pearson_p, thresholds["pearson"]),
+        ]
+        if kendall_corr is not None:
+            metrics.append(("Kendall", kendall_corr, kendall_p, thresholds["kendall"]))
+
+        for method, corr, p_val, thresh in metrics:
+            if corr > thresh["warning"]:
+                severity = "critical" if corr > thresh["critical"] else "warning"
+                impact = "high" if severity == "critical" else "medium"
+                quick_fix = (
+                    f"Options: \n- Drop one feature (e.g., {col2}): Reduces multicollinearity.\n- PCA/combine: Retains info.\n- Use tree-based models."
+                    if severity == "critical"
+                    else "Options: \n- Monitor in modeling.\n- Drop if redundant."
+                )
+                issues.append(
+                    Issue(
+                        category="feature_correlation",
+                        severity=severity,
+                        column=f"{col1},{col2}",
+                        description=f"Numeric columns '{col1}' and '{col2}' highly correlated ({method}: {corr:.3f}, p={p_val:.4f})",
+                        impact_score=impact,
+                        quick_fix=quick_fix,
+                    )
+                )
+
+    return issues
+
+
+def _check_categorical_correlation(analyzer, cat_cols: list, thresholds: dict):
+    issues = []
+    if len(cat_cols) < 2:
+        return issues
+
+    for col1, col2 in combinations(cat_cols, 2):
+        table = pd.crosstab(analyzer.df[col1], analyzer.df[col2])
+        cramers_v = _cramers_v_corrected(table)
+        if cramers_v > thresholds["warning"]:
+            severity = "critical" if cramers_v > thresholds["critical"] else "warning"
+            impact = "high" if severity == "critical" else "medium"
+            quick_fix = (
+                "Options: \n- Drop one (less predictive). \n- Group categories. \n- Use trees (robust to assoc.)."
+                if severity == "critical"
+                else "Options: \n- Monitor redundancy. \n- Re-encode."
+            )
+            issues.append(
+                Issue(
+                    category="feature_correlation",
+                    severity=severity,
+                    column=f"{col1},{col2}",
+                    description=f"Categorical columns '{col1}' and '{col2}' highly associated (Cramer's V: {cramers_v:.3f})",
+                    impact_score=impact,
+                    quick_fix=quick_fix,
+                )
+            )
+    return issues
+
+
+def _check_mixed_correlation(analyzer, numeric_cols: list, cat_cols: list, thresholds: dict):
+    issues = []
+    if not numeric_cols or not cat_cols:
+        return issues
+
+    discretizer = Discretizer(DiscretizationType.UNIFORM, n_bins=10)
+    df_disc = discretizer.discretize_dataframe(analyzer.df[numeric_cols + cat_cols])
+
+    for num_col, cat_col in [(n, c) for n in numeric_cols for c in cat_cols]:
+        table = pd.crosstab(df_disc[cat_col], df_disc[num_col])
+        cramers_v = _cramers_v_corrected(table)
+        if cramers_v > thresholds["warning"]:
+            severity = "critical" if cramers_v > thresholds["critical"] else "warning"
+            impact = "high" if severity == "critical" else "medium"
+            quick_fix = (
+                "Options: \n- Drop one. \n- Discretize/encode differently. \n- Use robust models."
+                if severity == "critical"
+                else "Options: \n- Monitor in modeling."
+            )
+            issues.append(
+                Issue(
+                    category="feature_correlation",
+                    severity=severity,
+                    column=f"{cat_col},{num_col}",
+                    description=f"Mixed columns '{cat_col}' (cat) and '{num_col}' (num) associated (Discretized Cramer's V: {cramers_v:.3f})",
+                    impact_score=impact,
+                    quick_fix=quick_fix,
+                )
+            )
+
+    return issues

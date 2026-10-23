@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Tablint logo: a dataset table inspected with a magnifying glass</title>
+  <rect width="128" height="128" fill="#0f1117"/>
+  <rect x="5" y="5" width="118" height="118" rx="26" fill="#272238" stroke="#3d304d" stroke-width="2"/>
+  <rect x="25" y="22" width="79" height="88" rx="9" fill="#63435f"/>
+  <rect x="19" y="17" width="80" height="88" rx="9" fill="#fffafc" stroke="#30283e" stroke-width="3"/>
+  <path d="M28 17h62a9 9 0 0 1 9 9v13H19V26a9 9 0 0 1 9-9z" fill="#b16286"/>
+  <path d="M20 39h78" stroke="#30283e" stroke-width="3"/>
+  <path d="M29 29h11m9 0h12m9 0h11" stroke="#fff8fc" stroke-width="3" stroke-linecap="round"/>
+  <path d="M47 40v56m25-56v56M27 58h64M27 77h64M27 96h64" fill="none" stroke="#d7c4d0" stroke-width="2"/>
+  <rect x="74" y="79" width="17" height="15" rx="2" fill="#f9d7a5"/>
+  <circle cx="83" cy="79" r="23" fill="#fffafc" fill-opacity="0.94" stroke="#30283e" stroke-width="7"/>
+  <path d="m100 97 17 17" stroke="#30283e" stroke-width="12" stroke-linecap="round"/>
+  <path d="m100 97 17 17" stroke="#b16286" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="83" cy="79" r="11" fill="#f3ad61"/>
+  <path d="M83 73v8" stroke="#30283e" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="83" cy="86" r="2" fill="#30283e"/>
+</svg>

@@ -2,8 +2,8 @@
 
 import pandas as pd
 
-import hashprep
-from hashprep import DatasetAnalyzer
+import tablint
+from tablint import DatasetAnalyzer
 
 TARGET_COLUMN = "Survived"
 VALID_CHECKS = DatasetAnalyzer.ALL_CHECKS
@@ -17,7 +17,7 @@ issues = summary["issues"]
 critical = [i for i in issues if i["severity"] == "critical"]
 warnings = [i for i in issues if i["severity"] == "warning"]
 
-print(hashprep.__version__)
+print(tablint.__version__)
 print(issues)
 print(critical)
 print(warnings)

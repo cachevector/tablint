@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from hashprep.checks.drift import check_drift
+from tablint.checks.drift import check_drift
 
 
 class TestNumericDrift:

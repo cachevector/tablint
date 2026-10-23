@@ -2,16 +2,16 @@
   let { size = 32, showText = true }: { size?: number; showText?: boolean } = $props();
 </script>
 
-<a href="/" class="logo" aria-label="HashPrep home">
+<a href="/" class="logo" aria-label="Tablint home">
   <img
-    src="https://raw.githubusercontent.com/cachevector/hashprep/refs/heads/main/docs/assets/hashprep-wobg.svg"
-    alt="HashPrep logo"
+    src="/favicon.svg"
+    alt="Tablint logo"
     width={size}
     height={size}
     loading="lazy"
   />
   {#if showText}
-    <span class="logo-text">HashPrep</span>
+    <span class="logo-text">Tablint</span>
   {/if}
 </a>
 

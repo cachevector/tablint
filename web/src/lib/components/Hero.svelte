@@ -4,7 +4,7 @@
 <section class="hero">
   <div class="container hero-inner">
     <div class="hero-badge">
-      <span class="badge">v0.1.0</span>
+      <span class="badge">v0.1.0b1</span>
     </div>
 
     <h1 class="hero-title">
@@ -18,18 +18,10 @@
 
     <div class="hero-actions">
       <a href="/docs#installation" class="btn-hero btn-hero-primary">
-        <svg width="12" height="20" viewBox="0 0 47.581429 77.315781" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g transform="translate(351.30686,-158.54937)">
-            <g transform="matrix(2.4307449,0,0,2.4307449,-363.74873,-127.07147)" style="fill:currentColor">
-              <path d="m 12.3073,127.88684 v 11.22412 4.57854 a 5.6360459,5.6360459 0 0 0 5.251876,5.62136 V 138.08674 133.5082 A 5.6360459,5.6360459 0 0 0 12.3073,127.88684 Z" />
-              <path d="m 5.1185506,117.50342 v 15.94993 a 5.4826112,5.4826112 0 0 0 5.2518754,5.4622 v -10.92491 -10.48722 z" />
-              <path d="m 19.441507,128.02077 v 13.09636 a 6.7146358,6.7146358 0 0 0 5.251876,-6.2513 v -0.79324 a 6.7146358,6.7146358 0 0 0 -5.251876,-6.05182 z" />
-            </g>
-          </g>
-        </svg>
+        <img src="/favicon.svg" width="20" height="20" alt="" />
         Get Started
       </a>
-      <a href="https://github.com/cachevector/hashprep" class="btn-hero btn-hero-secondary">
+      <a href="https://github.com/cachevector/tablint" class="btn-hero btn-hero-secondary">
         View on GitHub
       </a>
     </div>
@@ -44,12 +36,12 @@
         <span class="terminal-title">terminal</span>
       </div>
       <div class="terminal-body">
-        <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install hashprep</span>
-<span class="term-output">Successfully installed hashprep-0.1.0</span>
+        <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install tablint</span>
+<span class="term-output">Successfully installed tablint-0.1.0b1</span>
 
-<span class="term-prompt">$</span> <span class="term-cmd">hashprep scan train.csv --target Survived</span>
+<span class="term-prompt">$</span> <span class="term-cmd">tablint scan train.csv --target Survived</span>
 
-<span class="term-output">  HashPrep Dataset Analysis</span>
+<span class="term-output">  Tablint Dataset Analysis</span>
 <span class="term-output">  ────────────────────────────────────</span>
 <span class="term-accent">  3 critical</span><span class="term-output"> issues found</span>
 <span class="term-warn">  5 warnings</span><span class="term-output"> detected</span>

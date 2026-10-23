@@ -1,10 +1,11 @@
 """
-Comprehensive tests for HashPrep CLI commands.
+Comprehensive tests for Tablint CLI commands.
 """
 
 import json
 import os
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -12,14 +13,13 @@ import pytest
 
 
 def has_pdf_deps():
-    try:
-        # We need to check if we can actually run a PDF report
-        from hashprep.reports.pdf import PdfReport
-
-        PdfReport()
-        return True
-    except Exception:
-        return False
+    # Probe in a child process. A broken WeasyPrint/Pango install can abort
+    # the interpreter, which a try/except in this process cannot catch.
+    probe = subprocess.run(
+        [sys.executable, "-c", "from tablint.reports.pdf import PdfReport; PdfReport()"],
+        capture_output=True,
+    )
+    return probe.returncode == 0
 
 
 skip_pdf = pytest.mark.skipif(not has_pdf_deps(), reason="PDF dependencies missing")
@@ -40,7 +40,7 @@ def temp_output_dir():
 
 def run_cli(args, cwd=None):
     """Helper to run CLI commands."""
-    cmd = ["uv", "run", "hashprep"] + args
+    cmd = [sys.executable, "-m", "tablint.interfaces.cli.main", *args]
     if cwd is None:
         cwd = Path(__file__).parent.parent
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd)
@@ -48,7 +48,7 @@ def run_cli(args, cwd=None):
 
 
 class TestCLIScan:
-    """Test 'hashprep scan' command."""
+    """Test 'tablint scan' command."""
 
     def test_scan_basic(self, titanic_csv):
         """Test basic scan command."""
@@ -109,7 +109,7 @@ class TestCLIScan:
 
 
 class TestCLIDetails:
-    """Test 'hashprep details' command."""
+    """Test 'tablint details' command."""
 
     def test_details_basic(self, titanic_csv):
         """Test basic details command."""
@@ -136,7 +136,7 @@ class TestCLIDetails:
 
 
 class TestCLIReport:
-    """Test 'hashprep report' command."""
+    """Test 'tablint report' command."""
 
     def test_report_markdown(self, titanic_csv, temp_output_dir):
         """Test Markdown report generation."""
@@ -144,10 +144,10 @@ class TestCLIReport:
 
         assert result.returncode == 0
         assert "Report saved to:" in result.stdout
-        assert "train_hashprep_report.md" in result.stdout
+        assert "train_tablint_report.md" in result.stdout
 
         # Check file was created
-        report_file = os.path.join(temp_output_dir, "train_hashprep_report.md")
+        report_file = os.path.join(temp_output_dir, "train_tablint_report.md")
         assert os.path.exists(report_file)
 
     def test_report_json(self, titanic_csv, temp_output_dir):
@@ -155,10 +155,10 @@ class TestCLIReport:
         result = run_cli(["report", titanic_csv, "--format", "json"], cwd=temp_output_dir)
 
         assert result.returncode == 0
-        assert "train_hashprep_report.json" in result.stdout
+        assert "train_tablint_report.json" in result.stdout
 
         # Verify JSON is valid
-        report_file = os.path.join(temp_output_dir, "train_hashprep_report.json")
+        report_file = os.path.join(temp_output_dir, "train_tablint_report.json")
         assert os.path.exists(report_file)
         with open(report_file) as f:
             data = json.load(f)
@@ -172,9 +172,9 @@ class TestCLIReport:
         )
 
         assert result.returncode == 0
-        assert "train_hashprep_report.html" in result.stdout
+        assert "train_tablint_report.html" in result.stdout
 
-        report_file = os.path.join(temp_output_dir, "train_hashprep_report.html")
+        report_file = os.path.join(temp_output_dir, "train_tablint_report.html")
         assert os.path.exists(report_file)
 
     def test_report_html_neubrutalism(self, titanic_csv, temp_output_dir):
@@ -184,7 +184,7 @@ class TestCLIReport:
         )
 
         assert result.returncode == 0
-        assert "train_hashprep_report.html" in result.stdout
+        assert "train_tablint_report.html" in result.stdout
 
     @skip_pdf
     def test_report_pdf(self, titanic_csv, temp_output_dir):
@@ -192,9 +192,9 @@ class TestCLIReport:
         result = run_cli(["report", titanic_csv, "--format", "pdf", "--full"], cwd=temp_output_dir)
 
         assert result.returncode == 0
-        assert "train_hashprep_report.pdf" in result.stdout
+        assert "train_tablint_report.pdf" in result.stdout
 
-        report_file = os.path.join(temp_output_dir, "train_hashprep_report.pdf")
+        report_file = os.path.join(temp_output_dir, "train_tablint_report.pdf")
         assert os.path.exists(report_file)
         # Check PDF magic number
         with open(report_file, "rb") as f:
@@ -209,8 +209,8 @@ class TestCLIReport:
         assert "pipeline script saved" in result.stdout
 
         # Check files were created
-        assert os.path.exists(os.path.join(temp_output_dir, "train_hashprep_report_fixes.py"))
-        assert os.path.exists(os.path.join(temp_output_dir, "train_hashprep_report_pipeline.py"))
+        assert os.path.exists(os.path.join(temp_output_dir, "train_tablint_report_fixes.py"))
+        assert os.path.exists(os.path.join(temp_output_dir, "train_tablint_report_pipeline.py"))
 
     def test_report_no_visualizations(self, titanic_csv, temp_output_dir):
         """Test report without visualizations."""
@@ -241,14 +241,14 @@ class TestCLIReport:
 
 
 class TestCLIVersion:
-    """Test 'hashprep version' command."""
+    """Test 'tablint version' command."""
 
     def test_version(self):
         """Test version command."""
         result = run_cli(["version"])
 
         assert result.returncode == 0
-        assert "hashprep" in result.stdout.lower()
+        assert "tablint" in result.stdout.lower()
         # Should show version number
         assert any(char.isdigit() for char in result.stdout)
 
@@ -286,16 +286,16 @@ class TestCLIErrorHandling:
         assert result.returncode != 0
         assert "malformed" in result.stderr.lower()
 
-    def test_invalid_format(self, titanic_csv):
+    def test_invalid_format(self, titanic_csv, temp_output_dir):
         """Test with invalid report format."""
-        result = run_cli(["report", titanic_csv, "--format", "invalid"])
+        result = run_cli(["report", titanic_csv, "--format", "invalid"], cwd=temp_output_dir)
 
         # Should handle gracefully or error
         assert result.returncode != 0 or "error" in result.stderr.lower()
 
-    def test_invalid_check_name(self, titanic_csv):
+    def test_invalid_check_name(self, titanic_csv, temp_output_dir):
         """Test with invalid check name."""
-        result = run_cli(["report", titanic_csv, "--checks", "invalid_check_name"])
+        result = run_cli(["report", titanic_csv, "--checks", "invalid_check_name"], cwd=temp_output_dir)
 
         assert result.returncode == 0
         assert "Warning: Invalid checks ignored" in result.stdout
@@ -345,9 +345,9 @@ class TestCLIIntegration:
         )
 
         assert result.returncode == 0
-        assert os.path.exists(os.path.join(temp_output_dir, "train_hashprep_report.html"))
-        assert os.path.exists(os.path.join(temp_output_dir, "train_hashprep_report_fixes.py"))
-        assert os.path.exists(os.path.join(temp_output_dir, "train_hashprep_report_pipeline.py"))
+        assert os.path.exists(os.path.join(temp_output_dir, "train_tablint_report.html"))
+        assert os.path.exists(os.path.join(temp_output_dir, "train_tablint_report_fixes.py"))
+        assert os.path.exists(os.path.join(temp_output_dir, "train_tablint_report_pipeline.py"))
 
 
 if __name__ == "__main__":
