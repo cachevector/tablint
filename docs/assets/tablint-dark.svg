@@ -1,72 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="92.604156mm"
-   height="92.604156mm"
-   viewBox="0 0 92.604156 92.604156"
-   version="1.1"
-   id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="HP_Main.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     inkscape:zoom="0.53606888"
-     inkscape:cx="-417.85675"
-     inkscape:cy="610.92895"
-     inkscape:window-width="1920"
-     inkscape:window-height="1009"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
-  <defs
-     id="defs1" />
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(161.394,-150.90518)">
-    <g
-       id="g28"
-       transform="translate(0,18.741018)">
-      <rect
-         style="fill:#1d1d1d;fill-opacity:1;stroke-width:0.502873;stroke-linecap:round"
-         id="rect13"
-         width="92.604164"
-         height="92.604164"
-         x="-161.394"
-         y="132.16415"
-         ry="6.6352262" />
-      <g
-         id="g15"
-         transform="matrix(2.4307449,0,0,2.4307449,-151.32451,-145.81249)"
-         style="fill:#b16286;fill-opacity:1">
-        <path
-           id="path13"
-           style="fill:#b16286;fill-opacity:1;stroke-width:0.47904;stroke-linecap:round"
-           d="m 12.3073,127.88684 v 11.22412 4.57854 a 5.6360459,5.6360459 0 0 0 5.251876,5.62136 V 138.08674 133.5082 A 5.6360459,5.6360459 0 0 0 12.3073,127.88684 Z" />
-        <path
-           id="path14"
-           style="fill:#b16286;fill-opacity:1;stroke-width:0.476542;stroke-linecap:round"
-           d="m 5.1185506,117.50342 v 15.94993 a 5.4826112,5.4826112 0 0 0 5.2518754,5.4622 v -10.92491 -10.48722 z m 4.4824138,10.57868 a 5.4826112,5.4826112 0 0 0 -0.2351278,0.0558 5.4826112,5.4826112 0 0 1 0.2351278,-0.0558 z m -0.7529257,0.19999 a 5.4826112,5.4826112 0 0 0 -0.2625162,0.0987 5.4826112,5.4826112 0 0 1 0.2625162,-0.0987 z m -0.7250203,0.30696 a 5.4826112,5.4826112 0 0 0 -0.2475301,0.13126 5.4826112,5.4826112 0 0 1 0.2475301,-0.13126 z m -0.6945313,0.42168 a 5.4826112,5.4826112 0 0 0 -0.2041219,0.14418 5.4826112,5.4826112 0 0 1 0.2041219,-0.14418 z m -1.2702067,1.25264 a 5.4826112,5.4826112 0 0 0 -0.1390096,0.21445 5.4826112,5.4826112 0 0 1 0.1390096,-0.21445 z m -0.4072103,0.66456 a 5.4826112,5.4826112 0 0 0 -0.1255737,0.262 5.4826112,5.4826112 0 0 1 0.1255737,-0.262 z m -0.3100585,0.71881 a 5.4826112,5.4826112 0 0 0 -0.093018,0.27906 5.4826112,5.4826112 0 0 1 0.093018,-0.27906 z m -0.2144572,0.79531 a 5.4826112,5.4826112 0 0 0 -0.046509,0.23771 5.4826112,5.4826112 0 0 1 0.046509,-0.23771 z" />
-        <path
-           d="m 19.441507,128.02077 v 13.09636 a 6.7146358,6.7146358 0 0 0 5.251876,-6.2513 v -0.79324 a 6.7146358,6.7146358 0 0 0 -5.251876,-6.05182 z"
-           style="fill:#b16286;fill-opacity:1;stroke-width:0.578478;stroke-linecap:round"
-           id="path15" />
-      </g>
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Tablint logo: a dataset table inspected with a magnifying glass</title>
+  <rect width="128" height="128" fill="#0f1117"/>
+  <rect x="5" y="5" width="118" height="118" rx="26" fill="#272238" stroke="#3d304d" stroke-width="2"/>
+  <rect x="25" y="22" width="79" height="88" rx="9" fill="#63435f"/>
+  <rect x="19" y="17" width="80" height="88" rx="9" fill="#fffafc" stroke="#30283e" stroke-width="3"/>
+  <path d="M28 17h62a9 9 0 0 1 9 9v13H19V26a9 9 0 0 1 9-9z" fill="#b16286"/>
+  <path d="M20 39h78" stroke="#30283e" stroke-width="3"/>
+  <path d="M29 29h11m9 0h12m9 0h11" stroke="#fff8fc" stroke-width="3" stroke-linecap="round"/>
+  <path d="M47 40v56m25-56v56M27 58h64M27 77h64M27 96h64" fill="none" stroke="#d7c4d0" stroke-width="2"/>
+  <rect x="74" y="79" width="17" height="15" rx="2" fill="#f9d7a5"/>
+  <circle cx="83" cy="79" r="23" fill="#fffafc" fill-opacity="0.94" stroke="#30283e" stroke-width="7"/>
+  <path d="m100 97 17 17" stroke="#30283e" stroke-width="12" stroke-linecap="round"/>
+  <path d="m100 97 17 17" stroke="#b16286" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="83" cy="79" r="11" fill="#f3ad61"/>
+  <path d="M83 73v8" stroke="#30283e" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="83" cy="86" r="2" fill="#30283e"/>
 </svg>

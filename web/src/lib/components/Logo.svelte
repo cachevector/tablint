@@ -4,7 +4,7 @@
 
 <a href="/" class="logo" aria-label="Tablint home">
   <img
-    src="https://raw.githubusercontent.com/cachevector/tablint/refs/heads/main/docs/assets/tablint-wobg.svg"
+    src="/favicon.svg"
     alt="Tablint logo"
     width={size}
     height={size}

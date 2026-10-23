@@ -18,14 +18,13 @@
 
     <div class="hero-actions">
       <a href="/docs#installation" class="btn-hero btn-hero-primary">
-        <svg width="12" height="20" viewBox="0 0 47.581429 77.315781" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g transform="translate(351.30686,-158.54937)">
-            <g transform="matrix(2.4307449,0,0,2.4307449,-363.74873,-127.07147)" style="fill:currentColor">
-              <path d="m 12.3073,127.88684 v 11.22412 4.57854 a 5.6360459,5.6360459 0 0 0 5.251876,5.62136 V 138.08674 133.5082 A 5.6360459,5.6360459 0 0 0 12.3073,127.88684 Z" />
-              <path d="m 5.1185506,117.50342 v 15.94993 a 5.4826112,5.4826112 0 0 0 5.2518754,5.4622 v -10.92491 -10.48722 z" />
-              <path d="m 19.441507,128.02077 v 13.09636 a 6.7146358,6.7146358 0 0 0 5.251876,-6.2513 v -0.79324 a 6.7146358,6.7146358 0 0 0 -5.251876,-6.05182 z" />
-            </g>
-          </g>
+        <svg width="20" height="20" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="20" y="18" width="78" height="86" rx="8" stroke="currentColor" stroke-width="7" />
+          <path d="M21 39h76M47 41v56M72 41v56M28 59h63M28 78h63" stroke="currentColor" stroke-width="5" />
+          <circle cx="83" cy="79" r="23" fill="var(--brand-500)" stroke="currentColor" stroke-width="8" />
+          <path d="m101 97 16 17" stroke="currentColor" stroke-width="12" stroke-linecap="round" />
+          <path d="M83 68v16" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+          <circle cx="83" cy="91" r="3" fill="currentColor" />
         </svg>
         Get Started
       </a>
