@@ -16,6 +16,7 @@
     <img src="https://img.shields.io/badge/CLI-Supported-orange" />
     <!-- CI -->
     <a href="https://github.com/cachevector/tablint/actions/workflows/ci.yml"><img src="https://github.com/cachevector/tablint/actions/workflows/ci.yml/badge.svg" /></a>
+    <a href="https://tablint.cachevector.com"><img src="https://img.shields.io/badge/site-tablint.cachevector.com-111111" alt="tablint.cachevector.com" /></a>
   </p>
   <p>
     <!-- Features -->

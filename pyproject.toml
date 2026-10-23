@@ -54,9 +54,9 @@ parquet = [
 version = { attr = "tablint.__version__" }
 
 [project.urls]
-Homepage = "https://github.com/cachevector/tablint"
+Homepage = "https://tablint.cachevector.com"
 Repository = "https://github.com/cachevector/tablint"
-Documentation = "https://github.com/cachevector/tablint"
+Documentation = "https://tablint.cachevector.com/docs"
 Issues = "https://github.com/cachevector/tablint/issues"
 
 [tool.setuptools.packages.find]
