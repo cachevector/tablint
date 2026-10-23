@@ -28,7 +28,7 @@ def check_drift(
     df_test: pd.DataFrame,
     threshold: float = _DRIFT.p_value,
     config=None,
-    hashprep_config=None,
+    tablint_config=None,
 ) -> list[Issue]:
     """
     Check for distribution shift between two datasets.
@@ -37,8 +37,8 @@ def check_drift(
     if not isinstance(df_train, pd.DataFrame) or not isinstance(df_test, pd.DataFrame):
         raise TypeError("Both df_train and df_test must be pandas DataFrames")
 
-    drift_cfg = config if config is not None else (hashprep_config.drift if hashprep_config is not None else _DRIFT)
-    full_config = hashprep_config if hashprep_config is not None else DEFAULT_CONFIG
+    drift_cfg = config if config is not None else (tablint_config.drift if tablint_config is not None else _DRIFT)
+    full_config = tablint_config if tablint_config is not None else DEFAULT_CONFIG
     roles = infer_roles(df_train, infer_types(df_train, full_config), config=full_config)
     issues = []
 

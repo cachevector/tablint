@@ -1,15 +1,15 @@
-"""Load HashPrepConfig from YAML, TOML, or JSON files."""
+"""Load TablintConfig from YAML, TOML, or JSON files."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from ..config import HashPrepConfig, config_from_dict
+from ..config import TablintConfig, config_from_dict
 
 
-def load_config(path: str | Path) -> HashPrepConfig:
-    """Load a HashPrepConfig from a YAML (.yaml/.yml), TOML (.toml), or JSON (.json) file.
+def load_config(path: str | Path) -> TablintConfig:
+    """Load a TablintConfig from a YAML (.yaml/.yml), TOML (.toml), or JSON (.json) file.
 
     Only keys present in the file are overridden; all others fall back to defaults.
     """

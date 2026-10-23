@@ -23,7 +23,7 @@ def _load_generator(format_name):
 
             return HtmlReport()
         except ImportError as e:
-            raise ImportError("HTML reports require the reports extra: pip install 'hashprep[reports]'") from e
+            raise ImportError("HTML reports require the reports extra: pip install 'tablint[reports]'") from e
     elif format_name == "pdf":
         try:
             from .pdf import PdfReport
@@ -31,7 +31,7 @@ def _load_generator(format_name):
             return PdfReport()
         except Exception as e:
             raise ImportError(
-                f"PDF reports require the reports extra: pip install 'hashprep[reports]'. Underlying error: {e}"
+                f"PDF reports require the reports extra: pip install 'tablint[reports]'. Underlying error: {e}"
             ) from e
     return None
 

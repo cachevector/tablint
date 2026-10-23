@@ -2,15 +2,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.models import (
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.models import (
     EncodeMethod,
     FixSuggestion,
     FixType,
     ImputeMethod,
     ScaleMethod,
 )
-from hashprep.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.pipeline_builder import PipelineBuilder
 
 
 def test_hostile_column_name_does_not_execute_injected_code(capfd):

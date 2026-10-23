@@ -1,19 +1,19 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hashprep"
+name = "tablint"
 description = "A library for dataset quality checks, preprocessing, and report generation"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["data-science", "machine-learning", "eda", "data-cleaning", "profiling"]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -51,16 +51,16 @@ parquet = [
 ]
 
 [tool.setuptools.dynamic]
-version = { attr = "hashprep.__version__" }
+version = { attr = "tablint.__version__" }
 
 [project.urls]
-Homepage = "https://github.com/cachevector/hashprep"
-Repository = "https://github.com/cachevector/hashprep"
-Documentation = "https://github.com/cachevector/hashprep"
-Issues = "https://github.com/cachevector/hashprep/issues"
+Homepage = "https://github.com/cachevector/tablint"
+Repository = "https://github.com/cachevector/tablint"
+Documentation = "https://github.com/cachevector/tablint"
+Issues = "https://github.com/cachevector/tablint/issues"
 
 [tool.setuptools.packages.find]
-include = ["hashprep*"]
+include = ["tablint*"]
 
 [dependency-groups]
 dev = [
@@ -69,7 +69,7 @@ dev = [
 ]
 
 [project.scripts]
-hashprep = "hashprep.interfaces.cli.main:cli"
+tablint = "tablint.interfaces.cli.main:cli"
 
 [tool.ruff]
 target-version = "py310"
@@ -94,4 +94,4 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["hashprep"]
+known-first-party = ["tablint"]

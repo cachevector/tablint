@@ -1,6 +1,6 @@
-# Contributing to HashPrep
+# Contributing to Tablint
 
-First off – thank you for considering contributing to HashPrep 💜  
+First off – thank you for considering contributing to Tablint 💜  
 Your contributions help make this platform more useful for the ML community!
 
 ## How to Contribute
@@ -12,8 +12,8 @@ For new contributors, we suggest starting with Easy tasks.
 
 ### Fork and clone the repository
 ```bash
-git clone https://github.com/cachevector/hashprep.git
-cd hashprep
+git clone https://github.com/cachevector/tablint.git
+cd tablint
 ```
 
 ### Create a virtual environment
@@ -32,7 +32,7 @@ uv sync --group dev --all-extras
 <!-- To keep your fork updated:
 
 ```bash
-git remote add upstream https://github.com/cachevector/hashprep.git
+git remote add upstream https://github.com/cachevector/tablint.git
 git fetch upstream
 git branch --set-upstream-to=upstream/main main 
 ```

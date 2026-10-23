@@ -3,8 +3,8 @@
 import numpy as np
 import pandas as pd
 
-from hashprep import DatasetAnalyzer
-from hashprep.checks.drift import check_drift
+from tablint import DatasetAnalyzer
+from tablint.checks.drift import check_drift
 
 
 class TestEmptyDataframes:

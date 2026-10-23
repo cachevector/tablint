@@ -4,7 +4,7 @@
 <section class="hero">
   <div class="container hero-inner">
     <div class="hero-badge">
-      <span class="badge">v0.2.0</span>
+      <span class="badge">v0.1.0b1</span>
     </div>
 
     <h1 class="hero-title">
@@ -29,7 +29,7 @@
         </svg>
         Get Started
       </a>
-      <a href="https://github.com/cachevector/hashprep" class="btn-hero btn-hero-secondary">
+      <a href="https://github.com/cachevector/tablint" class="btn-hero btn-hero-secondary">
         View on GitHub
       </a>
     </div>
@@ -44,12 +44,12 @@
         <span class="terminal-title">terminal</span>
       </div>
       <div class="terminal-body">
-        <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install hashprep</span>
-<span class="term-output">Successfully installed hashprep-0.2.0</span>
+        <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install tablint</span>
+<span class="term-output">Successfully installed tablint-0.1.0b1</span>
 
-<span class="term-prompt">$</span> <span class="term-cmd">hashprep scan train.csv --target Survived</span>
+<span class="term-prompt">$</span> <span class="term-cmd">tablint scan train.csv --target Survived</span>
 
-<span class="term-output">  HashPrep Dataset Analysis</span>
+<span class="term-output">  Tablint Dataset Analysis</span>
 <span class="term-output">  ────────────────────────────────────</span>
 <span class="term-accent">  3 critical</span><span class="term-output"> issues found</span>
 <span class="term-warn">  5 warnings</span><span class="term-output"> detected</span>

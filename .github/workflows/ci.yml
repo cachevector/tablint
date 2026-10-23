@@ -67,10 +67,10 @@ jobs:
 
       - name: Smoke test the core wheel
         run: |
-          uv venv /tmp/hashprep-smoke
-          uv pip install --python /tmp/hashprep-smoke/bin/python dist/*.whl
+          uv venv /tmp/tablint-smoke
+          uv pip install --python /tmp/tablint-smoke/bin/python dist/*.whl
           status=0
-          /tmp/hashprep-smoke/bin/hashprep scan datasets/train.csv --target Survived --preset gate --fail-on critical --json || status=$?
+          /tmp/tablint-smoke/bin/tablint scan datasets/train.csv --target Survived --preset gate --fail-on critical --json || status=$?
           test "$status" -eq 2
 
   web-check:

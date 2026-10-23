@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-  <title>HashPrep — Dataset Profiler & Debugger for Machine Learning</title>
+  <title>Tablint — Dataset Profiler & Debugger for Machine Learning</title>
 </svelte:head>
 
 {@render children()}

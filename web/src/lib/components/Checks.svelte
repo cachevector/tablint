@@ -22,7 +22,7 @@
       <h2>13 built-in checks.<br />Every issue caught.</h2>
       <p class="section-subtitle">
         From basic data quality to ML-specific concerns,
-        HashPrep runs a comprehensive audit on your dataset.
+        Tablint runs a comprehensive audit on your dataset.
       </p>
     </div>
 

@@ -97,6 +97,9 @@ build/
 dist/
 
 hashprep-dev.json
+tablecheck-dev.json
+datalint-dev.json
+tablint-dev.json
 todo.md
 test.json
 

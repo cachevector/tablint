@@ -8,7 +8,7 @@
       <div class="code-info">
         <h2>Use it your way</h2>
         <p class="code-subtitle">
-          Quick terminal scan or deep Python integration — HashPrep fits into any ML workflow.
+          Quick terminal scan or deep Python integration — Tablint fits into any ML workflow.
         </p>
 
         <div class="check-list">
@@ -60,25 +60,25 @@
         <div class="code-body">
           {#if activeTab === 'cli'}
             <pre><code><span class="c-comment"># Quick scan for critical issues</span>
-<span class="c-prompt">$</span> hashprep scan train.csv --target Survived
+<span class="c-prompt">$</span> tablint scan train.csv --target Survived
 
 <span class="c-comment"># Detailed analysis of all issues</span>
-<span class="c-prompt">$</span> hashprep details train.csv --target Survived
+<span class="c-prompt">$</span> tablint details train.csv --target Survived
 
 <span class="c-comment"># Generate HTML report with fix scripts</span>
-<span class="c-prompt">$</span> hashprep report train.csv \
+<span class="c-prompt">$</span> tablint report train.csv \
     --format html \
     --theme minimal \
     --with-code
 
 <span class="c-comment"># Compare datasets for drift</span>
-<span class="c-prompt">$</span> hashprep report train.csv \
+<span class="c-prompt">$</span> tablint report train.csv \
     --comparison test.csv \
     --format html</code></pre>
           {:else}
             <pre><code><span class="c-keyword">import</span> pandas <span class="c-keyword">as</span> pd
-<span class="c-keyword">from</span> hashprep <span class="c-keyword">import</span> DatasetAnalyzer
-<span class="c-keyword">from</span> hashprep.reports <span class="c-keyword">import</span> generate_report
+<span class="c-keyword">from</span> tablint <span class="c-keyword">import</span> DatasetAnalyzer
+<span class="c-keyword">from</span> tablint.reports <span class="c-keyword">import</span> generate_report
 
 <span class="c-comment"># Load and analyze</span>
 df = pd.read_csv(<span class="c-string">"train.csv"</span>)

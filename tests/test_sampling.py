@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from hashprep.utils.sampling import DatasetSampler, SamplingConfig
+from tablint.utils.sampling import DatasetSampler, SamplingConfig
 
 
 class TestSampler:

@@ -1,5 +1,5 @@
 include README.md LICENSE
-recursive-include hashprep *.py
+recursive-include tablint *.py
 
 prune datasets
 prune examples

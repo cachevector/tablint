@@ -99,7 +99,7 @@ class PipelineBuilder:
         code: list[str] = []
 
         code.append('"""')
-        code.append("Auto-generated sklearn preprocessing pipeline by HashPrep.")
+        code.append("Auto-generated sklearn preprocessing pipeline by Tablint.")
         code.append("Review and adapt before production use.")
         code.append('"""')
         code.append("")

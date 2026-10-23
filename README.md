@@ -1,21 +1,21 @@
 <div align="center">
   <picture>
-    <img src="https://raw.githubusercontent.com/cachevector/hashprep/refs/heads/main/docs/assets/hashprep-wobg.svg" width="80">
+    <img src="https://raw.githubusercontent.com/cachevector/tablint/refs/heads/main/docs/assets/tablint-wobg.svg" width="80">
   </picture>
 
-  <h1>HashPrep</h1>
+  <h1>Tablint</h1>
   <p>
     <b> Dataset Profiler & Debugger for Machine Learning </b>
   </p>
 
   <p align="center">
     <!-- Distribution -->
-    <img src="https://img.shields.io/pypi/v/hashprep?color=blue&label=PyPI" />
+    <img src="https://img.shields.io/pypi/v/tablint?color=blue&label=PyPI" />
     <!-- License -->
     <img src="https://img.shields.io/badge/License-MIT-green" />
     <img src="https://img.shields.io/badge/CLI-Supported-orange" />
     <!-- CI -->
-    <a href="https://github.com/cachevector/hashprep/actions/workflows/ci.yml"><img src="https://github.com/cachevector/hashprep/actions/workflows/ci.yml/badge.svg" /></a>
+    <a href="https://github.com/cachevector/tablint/actions/workflows/ci.yml"><img src="https://github.com/cachevector/tablint/actions/workflows/ci.yml/badge.svg" /></a>
   </p>
   <p>
     <!-- Features -->
@@ -27,15 +27,15 @@
 </div>
 
 > [!NOTE]
-> HashPrep 0.2.0 is the production gate release. `critical` means "do not train this table as-is."
+> Tablint 0.1.0b1 is the first public beta. `critical` means "do not train this table as-is."
 
 ## Overview
 
-**HashPrep** is a Python library for intelligent dataset profiling and debugging that acts as a comprehensive pre-training quality assurance tool for machine learning projects.
+**Tablint** is a Python library for intelligent dataset profiling and debugging that acts as a comprehensive pre-training quality assurance tool for machine learning projects.
 Think of it as **"Pandas Profiling + PyLint for datasets"**, designed specifically for machine learning workflows.
 
 It catches critical dataset issues before they derail your ML pipeline, explains the problems, and suggests context-aware fixes.  
-If you want, HashPrep can even apply those fixes for you automatically.
+If you want, Tablint can even apply those fixes for you automatically.
 
 
 ---
@@ -57,7 +57,7 @@ Key features include:
 
 ### Using pip
 ```bash
-pip install hashprep
+pip install tablint
 ```
 
 ### Using uv (recommended)
@@ -65,29 +65,29 @@ pip install hashprep
 # Install uv if you haven't already
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install hashprep
-uv pip install hashprep
+# Install tablint
+uv pip install tablint
 
 # Or for development from source
-git clone https://github.com/cachevector/hashprep.git
-cd hashprep
+git clone https://github.com/cachevector/tablint.git
+cd tablint
 uv sync
 ```
 
-After installation, the `hashprep` command will be available directly in your terminal.
+After installation, the `tablint` command will be available directly in your terminal.
 
 ---
 
 ## Usage
 
-HashPrep can be used both as a **command-line tool** and as a **Python library**.
+Tablint can be used both as a **command-line tool** and as a **Python library**.
 
 ### CLI Usage
 
 #### 1. Quick Scan
 Get a quick summary of critical issues in your terminal.
 ```bash
-hashprep scan dataset.csv
+tablint scan dataset.csv
 ```
 
 **Options:**
@@ -106,29 +106,29 @@ hashprep scan dataset.csv
 **Example:**
 ```bash
 # Block a training job when the table is not trainable
-hashprep scan train.csv --target Survived --preset gate --fail-on critical
+tablint scan train.csv --target Survived --preset gate --fail-on critical
 
 # Quick scan with JSON output
-hashprep scan dataset.csv --json --quiet
+tablint scan dataset.csv --json --quiet
 ```
 
 #### 2. Detailed Analysis
 Get comprehensive details about all detected issues.
 ```bash
-hashprep details dataset.csv
+tablint details dataset.csv
 ```
 
 **Options:** Same as `scan` command (including `--config`)
 
 **Example:**
 ```bash
-hashprep details train.csv --target Survived
+tablint details train.csv --target Survived
 ```
 
 #### 3. Generate Reports
 Generate comprehensive reports in multiple formats with visualizations.
 ```bash
-hashprep report dataset.csv --format html --theme minimal
+tablint report dataset.csv --format html --theme minimal
 ```
 
 **Options:**
@@ -149,36 +149,36 @@ hashprep report dataset.csv --format html --theme minimal
 **Examples:**
 ```bash
 # Generate HTML report with minimal theme
-hashprep report dataset.csv --format html --theme minimal --full
+tablint report dataset.csv --format html --theme minimal --full
 
 # Generate PDF report without visualizations (faster)
-hashprep report dataset.csv --format pdf --no-visualizations
+tablint report dataset.csv --format pdf --no-visualizations
 
 # Generate report with automatic fix scripts
-hashprep report dataset.csv --with-code
+tablint report dataset.csv --with-code
 
 # Generate report with custom output path
-hashprep report dataset.csv --format html --output my_reports/analysis.html
+tablint report dataset.csv --format html --output my_reports/analysis.html
 
 # This creates:
-# - dataset_hashprep_report.md (or .html/.pdf/.json)
-# - dataset_hashprep_report_fixes.py (pandas script)
-# - dataset_hashprep_report_pipeline.py (sklearn pipeline)
+# - dataset_tablint_report.md (or .html/.pdf/.json)
+# - dataset_tablint_report_fixes.py (pandas script)
+# - dataset_tablint_report_pipeline.py (sklearn pipeline)
 
 # Compare two datasets for drift detection
-hashprep report train.csv --comparison test.csv --format html
+tablint report train.csv --comparison test.csv --format html
 ```
 
 #### 4. List Available Checks
-Discover all data quality checks that HashPrep can perform.
+Discover all data quality checks that Tablint can perform.
 ```bash
-hashprep checks
+tablint checks
 ```
 
 #### 5. Version
-Check HashPrep version.
+Check Tablint version.
 ```bash
-hashprep version
+tablint version
 ```
 
 #### Available Checks
@@ -221,7 +221,7 @@ hashprep version
 #### Basic Analysis
 ```python
 import pandas as pd
-from hashprep import DatasetAnalyzer
+from tablint import DatasetAnalyzer
 
 # Load your dataset
 df = pd.read_csv("dataset.csv")
@@ -286,7 +286,7 @@ summary = analyzer.analyze()
 
 #### Generate Reports Programmatically
 ```python
-from hashprep.reports import generate_report
+from tablint.reports import generate_report
 
 # Analyze dataset
 analyzer = DatasetAnalyzer(df, include_plots=True)
@@ -328,10 +328,10 @@ generate_report(
 
 #### Generate Fix Scripts
 ```python
-from hashprep.checks.core import Issue
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.pipeline_builder import PipelineBuilder
-from hashprep.preparers.suggestions import SuggestionProvider
+from tablint.checks.core import Issue
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.suggestions import SuggestionProvider
 
 # After running analysis
 analyzer = DatasetAnalyzer(df, target_col='target')
@@ -364,17 +364,17 @@ with open('pipeline.py', 'w') as f:
 
 #### Load Config from File
 ```python
-from hashprep.utils.config_loader import load_config
-from hashprep import DatasetAnalyzer
+from tablint.utils.config_loader import load_config
+from tablint import DatasetAnalyzer
 
 # Load thresholds from YAML, TOML, or JSON
-config = load_config("hashprep.yaml")  # or .toml / .json
+config = load_config("tablint.yaml")  # or .toml / .json
 
 analyzer = DatasetAnalyzer(df, config=config)
 summary = analyzer.analyze()
 ```
 
-Example `hashprep.yaml`:
+Example `tablint.yaml`:
 ```yaml
 missing_values:
   warning: 0.3
@@ -389,7 +389,7 @@ Only the keys you specify are overridden; all others fall back to defaults.
 
 #### Custom Sampling
 ```python
-from hashprep.utils.sampling import SamplingConfig
+from tablint.utils.sampling import SamplingConfig
 
 # Configure sampling for large datasets
 sampling_config = SamplingConfig(max_rows=10000)
@@ -411,7 +411,7 @@ if 'sampling_info' in summary:
 
 ## Production gate
 
-`DatasetAnalyzer` defaults to the `gate` preset. `hashprep report` defaults to `profile`.
+`DatasetAnalyzer` defaults to the `gate` preset. `tablint report` defaults to `profile`.
 
 `critical` is reserved for defects that should stop a training job: an empty table, an all-null column, missingness at or above the critical threshold, infinite values, duplicate rows above the critical ratio, a column identical or nearly identical to the target, and drift whose effect size is large. Skew, non-normality, ordinary correlation with the target, and zero-inflation of a binary target are warnings, and most of them run only in the `profile` preset.
 
@@ -424,14 +424,14 @@ Stable keys in `analyze()` and in `scan --json` / `details --json`:
 `summaries` and plots are best-effort and can change without a major version.
 
 ```bash
-hashprep scan train.csv --target Survived --preset gate --fail-on critical --json
+tablint scan train.csv --target Survived --preset gate --fail-on critical --json
 ```
 
 Exit 2 when `--fail-on` matches. A job that only checks the exit code should pass `--fail-on critical`.
 
 ### Limitations
 
-- Input is CSV, or Parquet when `hashprep[parquet]` is installed. HTML, PDF, and plots need `hashprep[reports]`.
+- Input is CSV, or Parquet when `tablint[parquet]` is installed. HTML, PDF, and plots need `tablint[reports]`.
 - Leakage means near-deterministic association with the target, not a proof that a column was built from the label.
 - Sampling is off unless you pass `--sample-size` or `auto_sample=True`. Checks then describe the analyzed frame, which is the full table by default.
 - Generated pandas code learns fill values from the frame you pass. Pass the training split, or fit the generated sklearn pipeline on that split.
@@ -446,7 +446,7 @@ This project is licensed under the [**MIT License**](./LICENSE).
 
 ## Contributing
 
-We welcome contributions from the community to make HashPrep better!
+We welcome contributions from the community to make Tablint better!
 
 Before you get started, please:
 

@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep import DatasetAnalyzer
-from hashprep.checks.statistical_tests import _check_normality, _check_variance_homogeneity
-from hashprep.summaries.variables import _summarize_numeric
+from tablint import DatasetAnalyzer
+from tablint.checks.statistical_tests import _check_normality, _check_variance_homogeneity
+from tablint.summaries.variables import _summarize_numeric
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -15,8 +15,8 @@ from hashprep.summaries.variables import _summarize_numeric
 
 class _FakeAnalyzer:
     def __init__(self, df, target_col=None):
-        from hashprep.config import DEFAULT_CONFIG
-        from hashprep.utils.type_inference import infer_types
+        from tablint.config import DEFAULT_CONFIG
+        from tablint.utils.type_inference import infer_types
 
         self.df = df
         self.target_col = target_col

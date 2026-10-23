@@ -1,10 +1,10 @@
-# HashPrep Official Release TODO
+# Tablint Official Release TODO
 
 ## Release Scope
 
 - [x] Decide the official version target, likely `0.1.0` unless the release should signal `1.0.0`.
 - [x] Freeze public API expectations for `DatasetAnalyzer`.
-- [x] Freeze public API expectations for `HashPrepConfig`.
+- [x] Freeze public API expectations for `TablintConfig`.
 - [x] Freeze public API expectations for `load_config`.
 - [x] Freeze public API expectations for `generate_report`.
 - [x] Freeze CLI behavior for `scan`, `details`, `report`, and `version`.
@@ -65,11 +65,11 @@
 
 ### Strongly Recommended
 
-- [x] Add an `--output` option to `hashprep report`.
-- [x] Allow `hashprep report data.csv --format html --output reports/data.html`.
-- [x] Add machine-readable JSON output for `hashprep details`.
-- [x] Add check discovery through a command such as `hashprep checks`.
-- [x] Alternatively add check discovery through an option such as `hashprep scan --list-checks`.
+- [x] Add an `--output` option to `tablint report`.
+- [x] Allow `tablint report data.csv --format html --output reports/data.html`.
+- [x] Add machine-readable JSON output for `tablint details`.
+- [x] Add check discovery through a command such as `tablint checks`.
+- [x] Alternatively add check discovery through an option such as `tablint scan --list-checks`.
 - [x] Document why issues are classified as `critical` versus `warning`.
 - [x] Review whether PDF/reporting dependencies should move to optional extras in a future release.
 - [x] Document any dependency-extra plan if it is deferred.
@@ -84,7 +84,7 @@
 
 ## Packaging
 
-- [x] Update `hashprep/__init__.py` from `0.1.0b3` to the official release version.
+- [x] Update `tablint/__init__.py` from `0.1.0b3` to the official release version.
 - [x] Update the beta note in `README.md`.
 - [x] Update the beta support table in `SECURITY.md`.
 - [x] Add or verify PyPI classifiers in `pyproject.toml`.
@@ -96,10 +96,10 @@
 - [x] Build wheel distribution.
 - [x] Inspect built package artifacts.
 - [x] Install the built wheel in a clean environment.
-- [x] Smoke test `import hashprep` from the built wheel.
-- [x] Smoke test `hashprep version` from the built wheel.
-- [x] Smoke test `hashprep scan datasets/train.csv` from the built wheel.
-- [x] Smoke test `hashprep report datasets/train.csv --format html` from the built wheel.
+- [x] Smoke test `import tablint` from the built wheel.
+- [x] Smoke test `tablint version` from the built wheel.
+- [x] Smoke test `tablint scan datasets/train.csv` from the built wheel.
+- [x] Smoke test `tablint report datasets/train.csv --format html` from the built wheel.
 - [x] Confirm `MANIFEST.in` excludes dev/demo files intentionally.
 - [x] Confirm `MANIFEST.in` includes all runtime files needed by reports and templates.
 
@@ -165,15 +165,15 @@
 - [x] Tag the release, for example `v0.1.0`.
 - [x] Publish to PyPI.
 - [x] Create GitHub release with release notes.
-- [x] Verify public install with `pip install hashprep`.
-- [x] Verify public CLI with `hashprep version`.
+- [x] Verify public install with `pip install tablint`.
+- [x] Verify public CLI with `tablint version`.
 - [x] Announce the release as the first stable release after alpha and beta.
 
 ## Known Immediate Gaps
 
 - [x] Version is still `0.1.0b3`.
 - [x] `README.md` still says beta.
-- [x] Website hero still says beta and shows `hashprep-0.1.0b3`.
+- [x] Website hero still says beta and shows `tablint-0.1.0b3`.
 - [x] `SECURITY.md` only describes beta support.
 - [x] `CHANGELOG.md` is not present.
 - [x] CI does not currently build or check publish artifacts.

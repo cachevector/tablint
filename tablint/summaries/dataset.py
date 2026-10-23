@@ -3,7 +3,7 @@ import hashlib
 import numpy as np
 import pandas as pd
 
-import hashprep
+import tablint
 
 
 def get_dataset_preview(df):
@@ -82,5 +82,5 @@ def add_reproduction_info(df: pd.DataFrame) -> dict:
     dataset_hash = hashlib.md5(pd.util.hash_pandas_object(df, index=True).values).hexdigest()
     return {
         "dataset_hash": dataset_hash,
-        "software_version": hashprep.__version__,
+        "software_version": tablint.__version__,
     }

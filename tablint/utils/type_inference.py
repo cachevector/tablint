@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from ..config import DEFAULT_CONFIG, HashPrepConfig
+from ..config import DEFAULT_CONFIG, TablintConfig
 
 _TYPE_TO_ROLE = {
     "Numeric": "numeric",
@@ -15,7 +15,7 @@ _TYPE_TO_ROLE = {
 }
 
 
-def _type_config(config: HashPrepConfig | None):
+def _type_config(config: TablintConfig | None):
     cfg = config or DEFAULT_CONFIG
     return cfg, cfg.type_inference, cfg.datetime
 
@@ -48,7 +48,7 @@ def _is_boolean_text(series: pd.Series, mappings: dict) -> bool:
     return bool(sample.isin(list(mappings)).all())
 
 
-def infer_types(df: pd.DataFrame, config: HashPrepConfig | None = None) -> dict[str, str]:
+def infer_types(df: pd.DataFrame, config: TablintConfig | None = None) -> dict[str, str]:
     """
     Infer semantic types per ydata logic.
     Returns: {col: 'Numeric' | 'Categorical' | 'Text' | 'DateTime' | 'Boolean' | 'Unsupported'}
@@ -101,7 +101,7 @@ def infer_roles(
     df: pd.DataFrame,
     column_types: dict[str, str],
     target_col: str | None = None,
-    config: HashPrepConfig | None = None,
+    config: TablintConfig | None = None,
 ) -> dict[str, str]:
     """Classify each column for checks.
 

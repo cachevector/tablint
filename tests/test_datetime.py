@@ -3,14 +3,14 @@
 import numpy as np
 import pandas as pd
 
-from hashprep import DatasetAnalyzer
-from hashprep.checks.datetime_checks import (
+from tablint import DatasetAnalyzer
+from tablint.checks.datetime_checks import (
     _check_datetime_future_dates,
     _check_datetime_gaps,
     _check_datetime_monotonicity,
 )
-from hashprep.summaries.variables import _summarize_datetime
-from hashprep.utils.type_inference import infer_types
+from tablint.summaries.variables import _summarize_datetime
+from tablint.utils.type_inference import infer_types
 
 # ---------------------------------------------------------------------------
 # Type inference
@@ -67,7 +67,7 @@ class _FakeAnalyzer:
     """Minimal stand-in for DatasetAnalyzer used in unit tests."""
 
     def __init__(self, df, column_types):
-        from hashprep.config import DEFAULT_CONFIG
+        from tablint.config import DEFAULT_CONFIG
 
         self.df = df
         self.column_types = column_types

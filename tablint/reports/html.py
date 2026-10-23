@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 import yaml
 
-import hashprep
+import tablint
 
 from .base import BaseReport, render_html
 
@@ -48,7 +48,7 @@ class HtmlReport(BaseReport):
             "analysis_finished": reproduction_info.get("analysis_finished", ""),
             "duration_seconds": reproduction_info.get("duration_seconds", 0),
             "dataset_hash": reproduction_info.get("dataset_hash", ""),
-            "version": hashprep.__version__,
+            "version": tablint.__version__,
             "config_json": json.dumps(self._generate_config(summary), indent=2),
             # Full report data
             "full": full,
@@ -76,7 +76,7 @@ class HtmlReport(BaseReport):
         """Generate configuration dict for download."""
         reproduction_info = summary["summaries"].get("reproduction_info", {})
         return {
-            "hashprep_version": hashprep.__version__,
+            "tablint_version": tablint.__version__,
             "analysis_timestamp": reproduction_info.get("analysis_started"),
             "dataset_hash": reproduction_info.get("dataset_hash"),
             "dataset_info": summary["summaries"].get("dataset_info", {}),
@@ -95,7 +95,7 @@ class HtmlReport(BaseReport):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HashPrep Quality Report</title>
+    <title>Tablint Quality Report</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
@@ -114,7 +114,7 @@ class HtmlReport(BaseReport):
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-lg">HashPrep</span>
+                    <span class="font-bold text-lg">Tablint</span>
                     <span class="text-gray-400 text-sm">v{{ version }}</span>
                 </div>
                 <div class="flex space-x-1">
@@ -279,7 +279,7 @@ class HtmlReport(BaseReport):
                         </div>
                         <div>
                             <dt class="text-gray-500">Software version</dt>
-                            <dd class="font-mono text-gray-900">hashprep v{{ version }}</dd>
+                            <dd class="font-mono text-gray-900">tablint v{{ version }}</dd>
                         </div>
                     </dl>
                     {% if not pdf_mode %}
@@ -676,7 +676,7 @@ class HtmlReport(BaseReport):
     </main>
 
     <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-gray-200 text-center text-gray-500">
-        <p class="text-sm">Built with HashPrep</p>
+        <p class="text-sm">Built with Tablint</p>
     </footer>
 
     <script>
@@ -687,7 +687,7 @@ class HtmlReport(BaseReport):
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'hashprep_config.json';
+            a.download = 'tablint_config.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -705,7 +705,7 @@ class HtmlReport(BaseReport):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HashPrep Quality Report [NEO]</title>
+    <title>Tablint Quality Report [NEO]</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -730,7 +730,7 @@ class HtmlReport(BaseReport):
         <header class="brutal-card mb-8 bg-white">
             <div class="flex justify-between items-center flex-wrap gap-4">
                 <div>
-                    <h1 class="text-4xl font-black uppercase italic">HashPrep // Report</h1>
+                    <h1 class="text-4xl font-black uppercase italic">Tablint // Report</h1>
                     <p class="font-bold mt-2">VERSION: {{ version }}</p>
                 </div>
                 <div class="flex gap-4">
@@ -1170,7 +1170,7 @@ class HtmlReport(BaseReport):
         {% endif %}
 
         <footer class="text-center font-black uppercase mt-12">
-            *** HashPrep ::: Dataset Debugger ***
+            *** Tablint ::: Dataset Debugger ***
         </footer>
     </div>
 
@@ -1182,7 +1182,7 @@ class HtmlReport(BaseReport):
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'hashprep_config.json';
+            a.download = 'tablint_config.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

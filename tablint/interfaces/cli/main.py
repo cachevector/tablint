@@ -8,15 +8,15 @@ import fuzzybunny
 import numpy as np
 import pandas as pd
 
-import hashprep
-from hashprep import DatasetAnalyzer
-from hashprep.checks.core import Issue
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.pipeline_builder import PipelineBuilder
-from hashprep.preparers.suggestions import SuggestionProvider
-from hashprep.reports import generate_report
-from hashprep.utils.config_loader import load_config
-from hashprep.utils.sampling import SamplingConfig
+import tablint
+from tablint import DatasetAnalyzer
+from tablint.checks.core import Issue
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.suggestions import SuggestionProvider
+from tablint.reports import generate_report
+from tablint.utils.config_loader import load_config
+from tablint.utils.sampling import SamplingConfig
 
 
 def json_numpy_handler(obj):
@@ -36,7 +36,7 @@ def _read_table(path: str) -> pd.DataFrame:
         try:
             return pd.read_parquet(path)
         except ImportError as e:
-            raise ImportError("Reading Parquet requires the parquet extra: pip install 'hashprep[parquet]'") from e
+            raise ImportError("Reading Parquet requires the parquet extra: pip install 'tablint[parquet]'") from e
     return pd.read_csv(path)
 
 
@@ -143,7 +143,7 @@ def error_handler():
         sys.exit(1)
     except Exception as e:
         click.secho(f"An unexpected error occurred: {e}", fg="red", err=True)
-        if os.environ.get("HASHPREP_DEBUG"):
+        if os.environ.get("TABLINT_DEBUG"):
             raise
         sys.exit(1)
 
@@ -155,7 +155,7 @@ def cli():
 
 @cli.command()
 def version():
-    click.echo(f"HashPrep Version: {hashprep.__version__}")
+    click.echo(f"Tablint Version: {tablint.__version__}")
 
 
 @cli.command()
@@ -255,7 +255,7 @@ def scan(
         click.echo("Warnings:")
         for issue in warnings:
             click.echo(f"- {issue['description']}")
-        click.echo("Next steps: Run 'hashprep details' or 'hashprep report' for more info.")
+        click.echo("Next steps: Run 'tablint details' or 'tablint report' for more info.")
         _exit_if_failed(summary, fail_on)
 
 
@@ -421,7 +421,7 @@ def report(
             include_plots=visualizations,
         )
 
-        base_name = os.path.splitext(os.path.basename(file_path))[0] + "_hashprep_report"
+        base_name = os.path.splitext(os.path.basename(file_path))[0] + "_tablint_report"
         if output:
             report_file = output
         else:

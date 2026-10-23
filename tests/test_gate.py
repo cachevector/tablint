@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 from click.testing import CliRunner
 
-from hashprep import DatasetAnalyzer
-from hashprep.interfaces.cli.main import _json_payload, cli
+from tablint import DatasetAnalyzer
+from tablint.interfaces.cli.main import _json_payload, cli
 
 TITANIC = Path(__file__).parent.parent / "datasets" / "train.csv"
 

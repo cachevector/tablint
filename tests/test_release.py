@@ -11,18 +11,18 @@ import pandas as pd
 import pytest
 from click.testing import CliRunner
 
-import hashprep
-from hashprep import DatasetAnalyzer, load_config
-from hashprep.checks.core import Issue
-from hashprep.checks.drift import check_drift
-from hashprep.config import config_from_dict
-from hashprep.interfaces.cli.main import cli
-from hashprep.preparers.codegen import CodeGenerator
-from hashprep.preparers.models import FixSuggestion, FixType, ImputeMethod
-from hashprep.preparers.pipeline_builder import PipelineBuilder
-from hashprep.preparers.suggestions import SuggestionProvider
-from hashprep.reports import generate_report
-from hashprep.utils.type_inference import infer_roles, infer_types
+import tablint
+from tablint import DatasetAnalyzer, load_config
+from tablint.checks.core import Issue
+from tablint.checks.drift import check_drift
+from tablint.config import config_from_dict
+from tablint.interfaces.cli.main import cli
+from tablint.preparers.codegen import CodeGenerator
+from tablint.preparers.models import FixSuggestion, FixType, ImputeMethod
+from tablint.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.suggestions import SuggestionProvider
+from tablint.reports import generate_report
+from tablint.utils.type_inference import infer_roles, infer_types
 
 ISSUE_KEYS = {
     "category",
@@ -129,7 +129,7 @@ class TestAnalyzerContract:
         assert summary["summaries"]["dataset_info"]["rows"] == 40
 
     def test_explicit_sample_is_recorded_and_limits_rows(self):
-        from hashprep.utils.sampling import SamplingConfig
+        from tablint.utils.sampling import SamplingConfig
 
         frame = pd.DataFrame({"x": range(300)})
         summary = DatasetAnalyzer(
@@ -281,7 +281,7 @@ class TestReportsAndConfig:
         markdown = markdown_path.read_text()
         assert "empty" in markdown
         payload = json.loads(json_path.read_text())
-        assert payload["metadata"]["version"] == hashprep.__version__
+        assert payload["metadata"]["version"] == tablint.__version__
         assert payload["alerts"]["issues"]
         assert payload["alerts"]["issues"][0]["severity"] in {"critical", "warning"}
 
@@ -300,7 +300,7 @@ class TestReportsAndConfig:
         with pytest.raises(ValueError, match="Unknown configuration key"):
             config_from_dict({"drift": {"not_a_threshold": 1}})
 
-        path = tmp_path / "hashprep.json"
+        path = tmp_path / "tablint.json"
         path.write_text(json.dumps({"drift": {"ks_warning": 0.2}}))
         assert load_config(path).drift.ks_warning == 0.2
 

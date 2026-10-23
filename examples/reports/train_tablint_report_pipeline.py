@@ -1,5 +1,5 @@
 """
-Auto-generated sklearn preprocessing pipeline by HashPrep.
+Auto-generated sklearn preprocessing pipeline by Tablint.
 Review and adapt before production use.
 """
 

@@ -16,7 +16,7 @@
               </g>
             </g>
           </svg>
-          <span class="footer-name">HashPrep</span>
+          <span class="footer-name">Tablint</span>
         </div>
         <p class="footer-tagline">Dataset Profiler & Debugger for Machine Learning</p>
       </div>
@@ -26,23 +26,23 @@
           <h4 class="footer-heading">Product</h4>
           <a href="/#features">Features</a>
           <a href="/#how-it-works">How It Works</a>
-          <a href="https://pypi.org/project/hashprep/">PyPI</a>
+          <a href="https://pypi.org/project/tablint/">PyPI</a>
         </div>
         <div class="footer-col">
           <h4 class="footer-heading">Resources</h4>
           <a href="/docs">Documentation</a>
-          <a href="https://github.com/cachevector/hashprep">GitHub</a>
-          <a href="https://github.com/cachevector/hashprep/blob/main/CONTRIBUTING.md">Contributing</a>
+          <a href="https://github.com/cachevector/tablint">GitHub</a>
+          <a href="https://github.com/cachevector/tablint/blob/main/CONTRIBUTING.md">Contributing</a>
         </div>
         <div class="footer-col">
           <h4 class="footer-heading">Legal</h4>
-          <a href="https://github.com/cachevector/hashprep/blob/main/LICENSE">MIT License</a>
+          <a href="https://github.com/cachevector/tablint/blob/main/LICENSE">MIT License</a>
         </div>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {currentYear} HashPrep. Open source under MIT License.</p>
+      <p>&copy; {currentYear} Tablint. Open source under MIT License.</p>
     </div>
   </div>
 </footer>

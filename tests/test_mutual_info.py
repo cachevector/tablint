@@ -4,11 +4,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep import DatasetAnalyzer
-from hashprep.checks.mutual_info import _check_low_mutual_information
-from hashprep.summaries.mutual_info import summarize_mutual_information
-from hashprep.summaries.variables import _summarize_categorical, _summarize_numeric
-from hashprep.utils.type_inference import infer_types
+from tablint import DatasetAnalyzer
+from tablint.checks.mutual_info import _check_low_mutual_information
+from tablint.summaries.mutual_info import summarize_mutual_information
+from tablint.summaries.variables import _summarize_categorical, _summarize_numeric
+from tablint.utils.type_inference import infer_types
 
 rng = np.random.default_rng(0)
 
@@ -20,7 +20,7 @@ rng = np.random.default_rng(0)
 
 class _FakeAnalyzer:
     def __init__(self, df, target_col=None):
-        from hashprep.config import DEFAULT_CONFIG
+        from tablint.config import DEFAULT_CONFIG
 
         self.df = df
         self.target_col = target_col

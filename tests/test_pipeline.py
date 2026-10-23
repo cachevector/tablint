@@ -4,13 +4,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from hashprep.preparers.models import (
+from tablint.preparers.models import (
     FixSuggestion,
     FixType,
     ImputeMethod,
     ScaleMethod,
 )
-from hashprep.preparers.pipeline_builder import PipelineBuilder
+from tablint.preparers.pipeline_builder import PipelineBuilder
 
 
 class TestPipelineBuilder:

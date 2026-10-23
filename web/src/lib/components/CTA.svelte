@@ -7,16 +7,16 @@
       <div class="cta-content">
         <h2>Stop debugging datasets manually.</h2>
         <p class="cta-subtitle">
-          Install HashPrep and get your first dataset audit in under a minute.
+          Install Tablint and get your first dataset audit in under a minute.
         </p>
         <div class="cta-install">
-          <code>pip install hashprep</code>
+          <code>pip install tablint</code>
         </div>
         <div class="cta-actions">
           <a href="/docs#installation" class="cta-btn cta-btn-primary">
             Get Started
           </a>
-          <a href="https://github.com/cachevector/hashprep" class="cta-btn cta-btn-secondary">
+          <a href="https://github.com/cachevector/tablint" class="cta-btn cta-btn-secondary">
             View on GitHub
           </a>
         </div>

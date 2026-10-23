@@ -3,7 +3,7 @@ from datetime import datetime
 
 import numpy as np
 
-import hashprep
+import tablint
 
 
 def json_numpy_handler(obj):
@@ -24,7 +24,7 @@ class JsonReport:
         report: dict = {
             "metadata": {
                 "generated": datetime.now().isoformat(),
-                "version": hashprep.__version__,
+                "version": tablint.__version__,
             },
             "dataset_overview": {
                 "statistics": {

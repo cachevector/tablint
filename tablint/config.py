@@ -1,4 +1,4 @@
-"""Centralized configuration for all HashPrep thresholds and defaults.
+"""Centralized configuration for all Tablint thresholds and defaults.
 
 All magic numbers and thresholds are defined here to make them:
 - Discoverable: one place to find all tuning knobs
@@ -216,7 +216,7 @@ class SummaryDefaults:
 
 
 @dataclass(frozen=True)
-class HashPrepConfig:
+class TablintConfig:
     """Root configuration aggregating all threshold groups."""
 
     missing_values: MissingValueThresholds = field(default_factory=MissingValueThresholds)
@@ -236,15 +236,15 @@ class HashPrepConfig:
 
 
 # Global default config instance
-DEFAULT_CONFIG = HashPrepConfig()
+DEFAULT_CONFIG = TablintConfig()
 
 
-def config_from_dict(d: dict) -> "HashPrepConfig":
-    """Build a HashPrepConfig from a (possibly partial) nested dict.
+def config_from_dict(d: dict) -> "TablintConfig":
+    """Build a TablintConfig from a (possibly partial) nested dict.
 
     Raises ValueError for unknown keys or wrong value types.
     """
-    default = HashPrepConfig()
+    default = TablintConfig()
 
     def _merge(cls, default_obj, overrides: dict, path=""):
         kwargs = {}
@@ -283,4 +283,4 @@ def config_from_dict(d: dict) -> "HashPrepConfig":
                     kwargs[f.name] = val
         return cls(**kwargs)
 
-    return _merge(HashPrepConfig, default, d)
+    return _merge(TablintConfig, default, d)

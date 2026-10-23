@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HashPrep Quality Report [NEO]</title>
+    <title>Tablint Quality Report [NEO]</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         <header class="brutal-card mb-8 bg-white">
             <div class="flex justify-between items-center flex-wrap gap-4">
                 <div>
-                    <h1 class="text-4xl font-black uppercase italic">HashPrep // Report</h1>
+                    <h1 class="text-4xl font-black uppercase italic">Tablint // Report</h1>
                     <p class="font-bold mt-2">VERSION: 0.1.0a4</p>
                 </div>
                 <div class="flex gap-4">
@@ -2846,13 +2846,13 @@
         
 
         <footer class="text-center font-black uppercase mt-12">
-            *** HashPrep ::: Dataset Debugger ***
+            *** Tablint ::: Dataset Debugger ***
         </footer>
     </div>
 
     <script>
         const configData = {
-  "hashprep_version": "0.1.0a4",
+  "tablint_version": "0.1.0a4",
   "analysis_timestamp": "2026-02-08T12:02:44.876261",
   "dataset_hash": "9a4bcd798a058b35f2f8aeaeede9a159",
   "dataset_info": {
@@ -2883,7 +2883,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'hashprep_config.json';
+            a.download = 'tablint_config.json';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

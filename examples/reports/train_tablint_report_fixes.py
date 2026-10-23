@@ -1,5 +1,5 @@
 """
-Auto-generated data cleaning script by HashPrep.
+Auto-generated data cleaning script by Tablint.
 Review and adapt before production use.
 """
 

@@ -6,7 +6,7 @@ import pandas as pd
 from scipy.stats import ConstantInputWarning
 
 from ..checks import run_checks
-from ..config import DEFAULT_CONFIG, HashPrepConfig
+from ..config import DEFAULT_CONFIG, TablintConfig
 from ..summaries import (
     add_reproduction_info,
     get_dataset_preview,
@@ -85,7 +85,7 @@ class DatasetAnalyzer:
         comparison_df: pd.DataFrame | None = None,
         sampling_config: SamplingConfig | None = None,
         auto_sample: bool = False,
-        config: HashPrepConfig | None = None,
+        config: TablintConfig | None = None,
         preset: str = "gate",
     ):
         if not isinstance(df, pd.DataFrame):
@@ -186,7 +186,7 @@ class DatasetAnalyzer:
                 plot_scatter,
             )
         except ImportError as e:
-            raise ImportError("Plots require the reports extra: pip install 'hashprep[reports]'") from e
+            raise ImportError("Plots require the reports extra: pip install 'tablint[reports]'") from e
 
         for col, stats in self.summaries["variables"].items():
             plots = {}

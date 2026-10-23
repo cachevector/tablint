@@ -33,7 +33,7 @@ class CodeGenerator:
         code_blocks: list[str] = []
 
         code_blocks.append('"""')
-        code_blocks.append("Auto-generated data cleaning script by HashPrep.")
+        code_blocks.append("Auto-generated data cleaning script by Tablint.")
         code_blocks.append("Review before use. Pass the training split only: means, medians,")
         code_blocks.append("modes, and scales are computed from the frame given to apply_fixes.")
         code_blocks.append("For a train/serve workflow, fit the generated sklearn pipeline instead.")

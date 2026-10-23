@@ -35,7 +35,7 @@ def _check_dataset_drift(analyzer):
             analyzer.comparison_df,
             threshold=drift_cfg.p_value,
             config=drift_cfg,
-            hashprep_config=analyzer.config,
+            tablint_config=analyzer.config,
         )
     return []
 

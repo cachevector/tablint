@@ -9,9 +9,9 @@
   <section class="docs-hero">
     <div class="container docs-hero-inner">
       <div class="docs-kicker">Documentation</div>
-      <h1>Learn HashPrep in minutes, not hours.</h1>
+      <h1>Learn Tablint in minutes, not hours.</h1>
       <p>
-        A focused guide to installing, running, and integrating HashPrep into your ML workflows. Built to match the
+        A focused guide to installing, running, and integrating Tablint into your ML workflows. Built to match the
         minimal, calm UI of the rest of the site.
       </p>
     </div>
@@ -42,7 +42,7 @@
         <section id="overview">
           <h2>Overview</h2>
           <p>
-            HashPrep is a dataset profiler and debugger for machine learning. Think of it as
+            Tablint is a dataset profiler and debugger for machine learning. Think of it as
             <strong>&ldquo;Pandas Profiling + a linter for datasets&rdquo;</strong> that runs before you train.
           </p>
           <p>
@@ -56,7 +56,7 @@
           <h2>Installation</h2>
           <div class="docs-card">
             <h3>Using pip</h3>
-            <pre data-lang="bash"><code><span class="hl-command">pip</span> <span class="hl-arg">install</span> <span class="hl-value">hashprep</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">pip</span> <span class="hl-arg">install</span> <span class="hl-value">tablint</span></code></pre>
           </div>
 
           <div class="docs-card">
@@ -64,17 +64,17 @@
             <pre data-lang="bash"><code><span class="hl-comment"># Install uv (if needed)</span>
 <span class="hl-command">curl</span> <span class="hl-flag">-LsSf</span> <span class="hl-value">https://astral.sh/uv/install.sh</span> <span class="hl-operator">|</span> <span class="hl-command">sh</span>
 
-<span class="hl-comment"># Install HashPrep</span>
-<span class="hl-command">uv</span> <span class="hl-command">pip</span> <span class="hl-arg">install</span> <span class="hl-value">hashprep</span>
+<span class="hl-comment"># Install Tablint</span>
+<span class="hl-command">uv</span> <span class="hl-command">pip</span> <span class="hl-arg">install</span> <span class="hl-value">tablint</span>
 
 <span class="hl-comment"># Or from source</span>
-<span class="hl-command">git</span> <span class="hl-arg">clone</span> <span class="hl-value">https://github.com/cachevector/hashprep.git</span>
-<span class="hl-command">cd</span> <span class="hl-value">hashprep</span>
+<span class="hl-command">git</span> <span class="hl-arg">clone</span> <span class="hl-value">https://github.com/cachevector/tablint.git</span>
+<span class="hl-command">cd</span> <span class="hl-value">tablint</span>
 <span class="hl-command">uv</span> <span class="hl-arg">sync</span></code></pre>
           </div>
 
           <p class="docs-note">
-            After installation, the <code>hashprep</code> command is available directly in your terminal.
+            After installation, the <code>tablint</code> command is available directly in your terminal.
           </p>
         </section>
 
@@ -83,7 +83,7 @@
           <div class="docs-card">
             <h3>1. Run a quick scan</h3>
             <p>Get a concise summary of dataset issues in your terminal.</p>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span></code></pre>
           </div>
 
           <div class="docs-grid-2">
@@ -98,7 +98,7 @@
             </div>
             <div class="docs-card">
               <h3>Example</h3>
-              <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">scan</span> <span class="hl-value">train.csv</span> <span class="hl-operator">\</span>
+              <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">scan</span> <span class="hl-value">train.csv</span> <span class="hl-operator">\</span>
   <span class="hl-flag">--target</span> <span class="hl-value">Survived</span> <span class="hl-operator">\</span>
   <span class="hl-flag">--checks</span> <span class="hl-value">outliers,high_missing_values,class_imbalance</span></code></pre>
             </div>
@@ -106,8 +106,8 @@
 
           <div class="docs-card">
             <h3>2. Detailed analysis</h3>
-            <p>Drill into every issue HashPrep found.</p>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">details</span> <span class="hl-value">train.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
+            <p>Drill into every issue Tablint found.</p>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">details</span> <span class="hl-value">train.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
           </div>
         </section>
 
@@ -117,7 +117,7 @@
           <div class="docs-card">
             <h3>Basic analysis</h3>
             <pre data-lang="python"><code><span class="hl-keyword">import</span> pandas <span class="hl-keyword">as</span> pd
-<span class="hl-keyword">from</span> hashprep <span class="hl-keyword">import</span> DatasetAnalyzer
+<span class="hl-keyword">from</span> tablint <span class="hl-keyword">import</span> DatasetAnalyzer
 
 df = pd.read_csv(<span class="hl-string">"dataset.csv"</span>)
 
@@ -154,7 +154,7 @@ summary = analyzer.analyze()</code></pre>
 
           <div class="docs-card">
             <h3>Generate a report from the CLI</h3>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-flag">--theme</span> <span class="hl-value">minimal</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-flag">--theme</span> <span class="hl-value">minimal</span></code></pre>
             <p>
               Reports can be exported as <code>md</code>, <code>json</code>, <code>html</code>, or
               <code>pdf</code>, using the <code>--format</code> flag. Use <code>--with-code</code> to generate
@@ -164,8 +164,8 @@ summary = analyzer.analyze()</code></pre>
 
           <div class="docs-card">
             <h3>Generate reports from Python</h3>
-            <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep <span class="hl-keyword">import</span> DatasetAnalyzer
-<span class="hl-keyword">from</span> hashprep.reports <span class="hl-keyword">import</span> generate_report
+            <pre data-lang="python"><code><span class="hl-keyword">from</span> tablint <span class="hl-keyword">import</span> DatasetAnalyzer
+<span class="hl-keyword">from</span> tablint.reports <span class="hl-keyword">import</span> generate_report
 
 analyzer = DatasetAnalyzer(df, include_plots=<span class="hl-builtin">True</span>)
 summary = analyzer.analyze()
@@ -174,7 +174,7 @@ generate_report(
     summary,
     format=<span class="hl-string">"html"</span>,
     full=<span class="hl-builtin">True</span>,
-    output_file=<span class="hl-string">"dataset_hashprep_report.html"</span>,
+    output_file=<span class="hl-string">"dataset_tablint_report.html"</span>,
     theme=<span class="hl-string">"minimal"</span>,
 )</code></pre>
           </div>
@@ -184,12 +184,12 @@ generate_report(
           <h2>CLI reference</h2>
 
           <div class="docs-card">
-            <h3><code>hashprep scan</code></h3>
+            <h3><code>tablint scan</code></h3>
             <p>
               Run a quick scan and print a compact summary of issues to the terminal. Ideal for a fast health check
               during development.
             </p>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
             <ul>
               <li><code>--target COLUMN</code> &mdash; target column for ML checks (class imbalance, leakage, etc.)</li>
               <li><code>--checks LIST</code> &mdash; comma-separated list of checks to run</li>
@@ -203,12 +203,12 @@ generate_report(
           </div>
 
           <div class="docs-card">
-            <h3><code>hashprep details</code></h3>
+            <h3><code>tablint details</code></h3>
             <p>
               Produce a verbose, line-by-line description of each issue in the dataset, with statistics and
               recommendations.
             </p>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">details</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">details</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
             <p>
               Accepts the same options as <code>scan</code> (including <code>--comparison</code> and <code>--config</code>) and is best used when you are actively debugging a dataset
               or deciding which columns to drop or transform.
@@ -216,12 +216,12 @@ generate_report(
           </div>
 
           <div class="docs-card">
-            <h3><code>hashprep report</code></h3>
+            <h3><code>tablint report</code></h3>
             <p>
               Generate a full report in HTML, PDF, Markdown, or JSON. Reports contain summaries, plots, and (optionally)
               auto-generated Python code.
             </p>
-            <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-flag">--theme</span> <span class="hl-value">minimal</span> <span class="hl-flag">--with-code</span></code></pre>
+            <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-flag">--theme</span> <span class="hl-value">minimal</span> <span class="hl-flag">--with-code</span></code></pre>
             <ul>
               <li><code>--format &#123;md,json,html,pdf&#125;</code> &mdash; output format (Markdown is the default)</li>
               <li><code>--theme &#123;minimal,neubrutalism&#125;</code> &mdash; HTML theme</li>
@@ -235,7 +235,7 @@ generate_report(
           <div class="docs-card">
             <h3>Exit codes</h3>
             <p>
-              HashPrep is CI-friendly: non-zero exit codes indicate that critical issues were detected or an internal
+              Tablint is CI-friendly: non-zero exit codes indicate that critical issues were detected or an internal
               error occurred. You can wire this into pre-commit hooks or data-quality checks in your pipeline.
             </p>
           </div>
@@ -250,7 +250,7 @@ generate_report(
               The core entry point for programmatic usage. It accepts a pandas <code>DataFrame</code> and optional
               configuration for targets, sampling, comparison datasets, and which checks to run.
             </p>
-            <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep <span class="hl-keyword">import</span> DatasetAnalyzer
+            <pre data-lang="python"><code><span class="hl-keyword">from</span> tablint <span class="hl-keyword">import</span> DatasetAnalyzer
 
 analyzer = DatasetAnalyzer(
     df,
@@ -271,10 +271,10 @@ summary = analyzer.analyze()</code></pre>
           <div class="docs-card">
             <h3>Sampling large datasets</h3>
             <p>
-              For very large tables, you can control how many rows HashPrep inspects using a sampling configuration.
+              For very large tables, you can control how many rows Tablint inspects using a sampling configuration.
               This keeps runtimes predictable in production.
             </p>
-            <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep.utils.sampling <span class="hl-keyword">import</span> SamplingConfig
+            <pre data-lang="python"><code><span class="hl-keyword">from</span> tablint.utils.sampling <span class="hl-keyword">import</span> SamplingConfig
 
 sampling = SamplingConfig(max_rows=<span class="hl-value">10000</span>)
 
@@ -293,12 +293,12 @@ summary = analyzer.analyze()</code></pre>
           <div class="docs-card">
             <h3>Generating fix scripts and pipelines</h3>
             <p>
-              Beyond reports, HashPrep can emit executable Python code that encodes suggested fixes and ML pipelines.
+              Beyond reports, Tablint can emit executable Python code that encodes suggested fixes and ML pipelines.
             </p>
-            <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep.checks.core <span class="hl-keyword">import</span> Issue
-<span class="hl-keyword">from</span> hashprep.preparers.codegen <span class="hl-keyword">import</span> CodeGenerator
-<span class="hl-keyword">from</span> hashprep.preparers.pipeline_builder <span class="hl-keyword">import</span> PipelineBuilder
-<span class="hl-keyword">from</span> hashprep.preparers.suggestions <span class="hl-keyword">import</span> SuggestionProvider
+            <pre data-lang="python"><code><span class="hl-keyword">from</span> tablint.checks.core <span class="hl-keyword">import</span> Issue
+<span class="hl-keyword">from</span> tablint.preparers.codegen <span class="hl-keyword">import</span> CodeGenerator
+<span class="hl-keyword">from</span> tablint.preparers.pipeline_builder <span class="hl-keyword">import</span> PipelineBuilder
+<span class="hl-keyword">from</span> tablint.preparers.suggestions <span class="hl-keyword">import</span> SuggestionProvider
 
 issues = [Issue(<span class="hl-arg">**i</span>) <span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> summary[<span class="hl-string">"issues"</span>]]
 column_types = summary.get(<span class="hl-string">"column_types"</span>, <span class="hl-builtin">dict</span>())
@@ -393,7 +393,7 @@ summary = analyzer.analyze()</code></pre>
         <section id="configuration">
           <h2>Configuration</h2>
           <p>
-            Every detection threshold in HashPrep has a sensible default. You can override any of them at runtime by
+            Every detection threshold in Tablint has a sensible default. You can override any of them at runtime by
             providing a config file &mdash; no code changes required.
           </p>
 
@@ -402,7 +402,7 @@ summary = analyzer.analyze()</code></pre>
             <p>Config files can be written in YAML (<code>.yaml</code> / <code>.yml</code>), TOML (<code>.toml</code>),
             or JSON (<code>.json</code>). Only the keys you specify are changed; everything else falls back to
             defaults.</p>
-            <pre data-lang="bash"><code><span class="hl-comment"># hashprep.yaml</span>
+            <pre data-lang="bash"><code><span class="hl-comment"># tablint.yaml</span>
 missing_values:
   warning: 0.3
   critical: 0.6
@@ -417,19 +417,19 @@ mutual_info:
           <div class="docs-grid-2">
             <div class="docs-card">
               <h3>Via CLI</h3>
-              <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
-  <span class="hl-flag">--config</span> <span class="hl-value">hashprep.yaml</span>
+              <pre data-lang="bash"><code><span class="hl-command">tablint</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
+  <span class="hl-flag">--config</span> <span class="hl-value">tablint.yaml</span>
 
-<span class="hl-command">hashprep</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
+<span class="hl-command">tablint</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
   <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-operator">\</span>
-  <span class="hl-flag">--config</span> <span class="hl-value">hashprep.toml</span></code></pre>
+  <span class="hl-flag">--config</span> <span class="hl-value">tablint.toml</span></code></pre>
             </div>
             <div class="docs-card">
               <h3>Via Python</h3>
-              <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep.utils.config_loader <span class="hl-keyword">import</span> load_config
-<span class="hl-keyword">from</span> hashprep <span class="hl-keyword">import</span> DatasetAnalyzer
+              <pre data-lang="python"><code><span class="hl-keyword">from</span> tablint.utils.config_loader <span class="hl-keyword">import</span> load_config
+<span class="hl-keyword">from</span> tablint <span class="hl-keyword">import</span> DatasetAnalyzer
 
-config = load_config(<span class="hl-string">"hashprep.yaml"</span>)
+config = load_config(<span class="hl-string">"tablint.yaml"</span>)
 analyzer = DatasetAnalyzer(df, config=config)
 summary = analyzer.analyze()</code></pre>
             </div>
@@ -439,11 +439,11 @@ summary = analyzer.analyze()</code></pre>
         <section id="contributing">
           <h2>Contributing</h2>
           <p>
-            HashPrep is open source and welcomes contributions. If you want to fix a bug, add a check, or improve the
+            Tablint is open source and welcomes contributions. If you want to fix a bug, add a check, or improve the
             reports:
           </p>
           <ul>
-            <li>Read the <a href="https://github.com/cachevector/hashprep/blob/main/CONTRIBUTING.md">contribution guide</a></li>
+            <li>Read the <a href="https://github.com/cachevector/tablint/blob/main/CONTRIBUTING.md">contribution guide</a></li>
             <li>Open an issue describing the change you&rsquo;d like to make</li>
             <li>Create a pull request with clear motivation and tests where appropriate</li>
           </ul>
