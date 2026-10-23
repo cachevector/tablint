@@ -7,6 +7,7 @@ import yaml
 import tablint
 
 from .base import BaseReport, render_html
+from .logo import LOGO_SVG
 
 
 class HtmlReport(BaseReport):
@@ -49,6 +50,7 @@ class HtmlReport(BaseReport):
             "duration_seconds": reproduction_info.get("duration_seconds", 0),
             "dataset_hash": reproduction_info.get("dataset_hash", ""),
             "version": tablint.__version__,
+            "logo_svg": LOGO_SVG,
             "config_json": json.dumps(self._generate_config(summary), indent=2),
             # Full report data
             "full": full,
@@ -114,6 +116,7 @@ class HtmlReport(BaseReport):
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14">
                 <div class="flex items-center space-x-2">
+                    {{ logo_svg }}
                     <span class="font-bold text-lg">Tablint</span>
                     <span class="text-gray-400 text-sm">v{{ version }}</span>
                 </div>
@@ -729,9 +732,12 @@ class HtmlReport(BaseReport):
         <!-- Header -->
         <header class="brutal-card mb-8 bg-white">
             <div class="flex justify-between items-center flex-wrap gap-4">
-                <div>
-                    <h1 class="text-4xl font-black uppercase italic">Tablint // Report</h1>
-                    <p class="font-bold mt-2">VERSION: {{ version }}</p>
+                <div class="flex items-center gap-4">
+                    {{ logo_svg }}
+                    <div>
+                        <h1 class="text-4xl font-black uppercase italic">Tablint // Report</h1>
+                        <p class="font-bold mt-2">VERSION: {{ version }}</p>
+                    </div>
                 </div>
                 <div class="flex gap-4">
                     <div class="brutal-card bg-red-400 py-2 px-4">

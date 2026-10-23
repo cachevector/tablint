@@ -18,14 +18,7 @@
 
     <div class="hero-actions">
       <a href="/docs#installation" class="btn-hero btn-hero-primary">
-        <svg width="20" height="20" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="20" y="18" width="78" height="86" rx="8" stroke="currentColor" stroke-width="7" />
-          <path d="M21 39h76M47 41v56M72 41v56M28 59h63M28 78h63" stroke="currentColor" stroke-width="5" />
-          <circle cx="83" cy="79" r="23" fill="var(--brand-500)" stroke="currentColor" stroke-width="8" />
-          <path d="m101 97 16 17" stroke="currentColor" stroke-width="12" stroke-linecap="round" />
-          <path d="M83 68v16" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
-          <circle cx="83" cy="91" r="3" fill="currentColor" />
-        </svg>
+        <img src="/favicon.svg" width="20" height="20" alt="" />
         Get Started
       </a>
       <a href="https://github.com/cachevector/tablint" class="btn-hero btn-hero-secondary">

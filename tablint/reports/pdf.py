@@ -6,6 +6,7 @@ from weasyprint import HTML
 import tablint
 
 from .base import BaseReport, render_html
+from .logo import LOGO_SVG
 
 
 class PdfReport(BaseReport):
@@ -41,6 +42,7 @@ class PdfReport(BaseReport):
             "analysis_finished": reproduction_info.get("analysis_finished", ""),
             "duration_seconds": reproduction_info.get("duration_seconds", 0),
             "version": tablint.__version__,
+            "logo_svg": LOGO_SVG,
             "full": full,
             "head_table": head_df.to_html(index=False, border=0),
             "tail_table": tail_df.to_html(index=False, border=0),
@@ -81,6 +83,9 @@ class PdfReport(BaseReport):
     h4 { font-size: 9pt; margin: 10pt 0 4pt 0; color: #555; text-transform: uppercase; letter-spacing: 0.5pt; }
 
     .header { margin-bottom: 16pt; }
+    .header .brand { display: flex; align-items: center; gap: 8pt; }
+    .header .brand h1 { margin: 0; }
+    .header .brand svg { width: 28pt; height: 28pt; }
     .header .version { font-size: 9pt; color: #888; }
     .header .badges { margin-top: 4pt; }
     .badge {
@@ -268,7 +273,7 @@ class PdfReport(BaseReport):
 
 <!-- Header -->
 <div class="header">
-    <h1>Tablint Report</h1>
+    <div class="brand">{{ logo_svg }}<h1>Tablint Report</h1></div>
     <span class="version">v{{ version }}</span>
     <div class="badges">
         <span class="badge badge-critical">{{ critical_count }} Critical</span>

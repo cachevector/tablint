@@ -1,6 +1,6 @@
 <div align="center">
   <picture>
-    <img src="docs/assets/tablint-wobg.svg" width="96" alt="Tablint logo: a dataset table inspected with a magnifying glass">
+    <img src="https://raw.githubusercontent.com/cachevector/tablint/refs/heads/main/docs/assets/tablint-wobg.svg" width="96" alt="Tablint logo: a dataset table inspected with a magnifying glass">
   </picture>
 
   <h1>Tablint</h1>
