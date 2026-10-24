@@ -1,15 +1,14 @@
 <script lang="ts">
+  import SectionHeader from './SectionHeader.svelte';
 </script>
 
-<section class="themes-section">
+<section class="section">
   <div class="container">
-    <div class="section-header">
-      <h2>Beautiful reports.<br />Your choice of style.</h2>
-      <p class="section-subtitle">
-        Generate professional HTML reports with two built-in themes.
-        Every report includes interactive visualizations and detailed diagnostics.
-      </p>
-    </div>
+    <SectionHeader
+      index="05 / Reports"
+      title="Beautiful reports. Your choice of style."
+      intro="Generate professional HTML reports with two built-in themes. Every report includes interactive visualizations and detailed diagnostics."
+    />
 
     <div class="themes-grid">
       <div class="theme-card">
@@ -64,38 +63,24 @@
 </section>
 
 <style>
-  .themes-section {
-    padding: 120px 0;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 80px;
-  }
-
-  .section-subtitle {
-    max-width: 460px;
-    margin: 16px auto 0;
-    font-size: 1.05rem;
-    padding: 0 16px;
-  }
-
   .themes-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
+    gap: 24px;
   }
 
   .theme-card {
-    text-align: center;
+    padding: 16px 16px 24px;
+    border: 1px solid var(--border-secondary);
+    background: var(--bg-elevated);
   }
 
   .theme-preview {
-    border-radius: var(--radius-md);
+    border-radius: 0;
     overflow: hidden;
     margin-bottom: 20px;
     aspect-ratio: 16 / 10;
-    border: 1px solid var(--border-primary);
+    border: 1px solid var(--border-secondary);
   }
 
   .minimal-preview {
@@ -153,7 +138,7 @@
   .preview-line {
     height: 6px;
     border-radius: 3px;
-    background: var(--border-primary);
+    background: var(--border-secondary);
   }
 
   .neu-line {
@@ -200,25 +185,15 @@
   }
 
   .theme-desc {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    max-width: 360px;
-    margin: 0 auto;
-    line-height: 1.6;
+    font-size: 0.9375rem;
+    max-width: 420px;
+    line-height: 1.55;
   }
 
   @media (max-width: 640px) {
-    .themes-section {
-      padding: 64px 0;
-    }
-
     .themes-grid {
       grid-template-columns: 1fr;
       gap: 32px;
-    }
-
-    .section-header {
-      margin-bottom: 40px;
     }
   }
 </style>

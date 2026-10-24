@@ -2,10 +2,11 @@
   let activeTab = $state<'cli' | 'python'>('cli');
 </script>
 
-<section class="code-section">
+<section class="section">
   <div class="container">
     <div class="code-layout">
       <div class="code-info">
+        <p class="cv-eyebrow eyebrow">03 / Usage</p>
         <h2>Use it your way</h2>
         <p class="code-subtitle">
           Quick terminal scan or deep Python integration — Tablint fits into any ML workflow.
@@ -13,27 +14,19 @@
 
         <div class="check-list">
           <div class="check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <span class="tick" aria-hidden="true">+</span>
             <span>13 built-in dataset checks</span>
           </div>
           <div class="check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <span class="tick" aria-hidden="true">+</span>
             <span>HTML, PDF, Markdown, JSON reports</span>
           </div>
           <div class="check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <span class="tick" aria-hidden="true">+</span>
             <span>Auto-generated fix scripts</span>
           </div>
           <div class="check-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <span class="tick" aria-hidden="true">+</span>
             <span>Drift detection between datasets</span>
           </div>
         </div>
@@ -42,6 +35,7 @@
       <div class="code-panel">
         <div class="code-tabs">
           <button
+            type="button"
             class="code-tab"
             class:active={activeTab === 'cli'}
             onclick={() => activeTab = 'cli'}
@@ -49,6 +43,7 @@
             CLI
           </button>
           <button
+            type="button"
             class="code-tab"
             class:active={activeTab === 'python'}
             onclick={() => activeTab = 'python'}
@@ -107,76 +102,82 @@ generate_report(
 </section>
 
 <style>
-  .code-section {
-    padding: 120px 0;
-  }
-
   .code-layout {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 64px;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .eyebrow {
+    margin-bottom: 20px;
   }
 
   .code-info h2 {
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .code-subtitle {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    margin-bottom: 32px;
-    line-height: 1.7;
+    max-width: 420px;
+    margin-bottom: 28px;
   }
 
   .check-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    border-top: 1px solid var(--border-secondary);
   }
 
   .check-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-secondary);
+    font-size: 0.9375rem;
     color: var(--text-secondary);
+  }
+
+  .tick {
+    font-family: var(--font-mono);
+    color: var(--accent);
   }
 
   .code-panel {
     border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
+    background: var(--bg-elevated);
+    min-width: 0;
   }
 
   .code-tabs {
     display: flex;
-    border-bottom: 1px solid var(--border-primary);
-    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-secondary);
   }
 
   .code-tab {
-    padding: 10px 20px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    padding: 10px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--text-tertiary);
-    border-bottom: 2px solid transparent;
-    transition: all var(--transition-fast);
+    border-right: 1px solid var(--border-secondary);
+    margin-bottom: -1px;
+    border-bottom: 1.5px solid transparent;
+    transition: color var(--transition-fast);
   }
 
   .code-tab:hover {
-    color: var(--text-secondary);
+    color: var(--text-primary);
   }
 
   .code-tab.active {
-    color: var(--accent);
+    color: var(--text-primary);
     border-bottom-color: var(--accent);
   }
 
   .code-body {
-    padding: 24px;
-    background: var(--code-bg);
+    padding: 20px;
     overflow-x: auto;
   }
 
@@ -190,50 +191,26 @@ generate_report(
     color: var(--text-secondary);
   }
 
-  .c-comment { color: var(--text-tertiary); }
+  .c-comment { color: var(--hl-comment); }
   .c-prompt { color: var(--text-tertiary); user-select: none; }
-  .c-keyword { color: var(--accent); }
-  .c-string { color: #98971a; }
-  .c-builtin { color: var(--text-primary); }
+  .c-keyword { color: var(--hl-keyword); }
+  .c-string { color: var(--hl-string); }
+  .c-builtin { color: var(--hl-builtin); }
 
-  :global([data-theme="dark"]) .c-string {
-    color: #b8bb26;
-  }
-
-  @media (max-width: 1024px) {
+  @media (min-width: 1000px) {
     .code-layout {
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-
-    .code-info {
-      text-align: center;
-    }
-
-    .check-list {
-      align-items: center;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 64px;
     }
   }
 
-  @media (max-width: 640px) {
-    .code-section {
-      padding: 64px 0;
-    }
-
+  @media (max-width: 480px) {
     .code-body {
-      padding: 16px;
+      padding: 14px;
     }
 
     .code-body pre {
-      font-size: 0.68rem;
-    }
-
-    .code-info {
-      text-align: left;
-    }
-
-    .check-list {
-      align-items: flex-start;
+      font-size: 0.7rem;
     }
   }
 </style>

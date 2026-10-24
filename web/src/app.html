@@ -5,19 +5,24 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content="Tablint — Dataset Profiler & Debugger for Machine Learning. Catch critical dataset issues before they derail your ML pipeline." />
+		<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0f0f0d" media="(prefers-color-scheme: dark)" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
 			rel="stylesheet"
 		/>
+		<link rel="stylesheet" href="%sveltekit.assets%/cv.css" />
 		<script>
 			(function() {
-				var pref = localStorage.getItem('tablint-theme') || 'system';
-				var theme = pref;
-				if (pref === 'system') {
-					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-				}
+				// cv-theme is shared across *.cachevector.org; tablint-theme is the older per-site key.
+				var m = document.cookie.match(/(?:^|; )cv-theme=(light|dark)/);
+				var pref = m ? m[1] : null;
+				try { pref = pref || localStorage.getItem('tablint-theme'); } catch (e) {}
+				var theme = pref === 'light' || pref === 'dark'
+					? pref
+					: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 				document.documentElement.setAttribute('data-theme', theme);
 			})();
 		</script>

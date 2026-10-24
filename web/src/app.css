@@ -1,138 +1,73 @@
 /* ============================================
-   Tablint Design System
-   Primary accent: #b16286 (rose/mauve from logo)
-   Typography: Epilogue (300-600) + DM Mono (300-500)
+   Tablint — built on the CacheVector design tokens (static/cv.css).
+   Tablint only swaps the accent: gruvbox purple, matching the logo.
    ============================================ */
 
 :root {
-  /* Brand colors derived from #b16286 */
-  --brand-50: #fdf2f8;
-  --brand-100: #fce7f3;
-  --brand-200: #f5d0e6;
-  --brand-300: #e8a9cd;
-  --brand-400: #d47eaf;
-  --brand-500: #b16286;
-  --brand-600: #9d4f72;
-  --brand-700: #843f5e;
-  --brand-800: #6e354e;
-  --brand-900: #5c2f44;
+  --cv-accent-light: #b16286;
+  --cv-accent-dark: #d3869b;
 
-  /* Base sizing */
-  --max-width: 1200px;
-  --nav-height: 64px;
+  --nav-height: var(--cv-nav-height);
+  --max-width: var(--cv-max-width);
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-full: 9999px;
 
-  /* Typography */
-  --font-sans: 'Epilogue', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'DM Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+  --font-sans: var(--cv-font-sans);
+  --font-mono: var(--cv-font-mono);
 
-  /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
 }
 
-/* ---- Light Theme (default) ---- */
-:root, [data-theme="light"] {
-  color-scheme: light;
-  --bg-primary: #fdfbff;
-  --bg-secondary: #f9f4fb;
-  --bg-tertiary: #f2e9f4;
-  --bg-elevated: #ffffff;
-  --bg-code: #fafafa;
+/* Component-facing names, resolved from the shared tokens per theme. */
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  --bg-primary: var(--cv-bg);
+  --bg-secondary: var(--cv-bg-sunken);
+  --bg-tertiary: var(--cv-bg-sunken);
+  --bg-elevated: var(--cv-bg-raised);
+  --bg-code: var(--cv-bg-sunken);
 
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #ffffff;
+  --text-primary: var(--cv-fg);
+  --text-secondary: var(--cv-fg-muted);
+  --text-tertiary: var(--cv-fg-subtle);
+  --text-inverse: var(--cv-bg);
 
-  --border-primary: rgba(15, 23, 42, 0.12);
-  --border-secondary: rgba(148, 163, 184, 0.4);
-  --border-accent: var(--brand-200);
+  --border-primary: var(--cv-line-strong);
+  --border-secondary: var(--cv-line);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --accent: var(--cv-accent);
+  --accent-hover: var(--cv-fg);
+  --accent-light: var(--cv-accent-soft);
 
-  --accent: var(--brand-500);
-  --accent-hover: var(--brand-600);
-  --accent-light: var(--brand-50);
-  --accent-muted: var(--brand-100);
-
-  --nav-bg: rgba(253, 251, 255, 0.9);
-  --nav-border: var(--border-secondary);
-
-  --code-bg: #fafafa;
-  --code-text: var(--text-primary);
-  --code-border: var(--border-primary);
-
-  --hero-gradient: radial-gradient(circle at top, rgba(177, 98, 134, 0.16), transparent 55%),
-    radial-gradient(circle at bottom, rgba(148, 163, 184, 0.12), transparent 65%);
-  --section-alt-bg: var(--bg-secondary);
-
-  --grid-color: rgba(148, 163, 184, 0.15);
-
-  --hl-comment: #64748b;
-  --hl-arg:     #15803d;
-  --hl-operator:#6b7280;
-  --hl-value:   #a16207;
-  --hl-keyword: #7c3aed;
-  --hl-string:  #c2410c;
-  --hl-builtin: #0369a1;
+  --code-bg: var(--cv-bg-sunken);
+  --code-text: var(--cv-fg);
+  --code-border: var(--cv-line);
 }
 
-/* ---- Dark Theme ---- */
+/* Syntax colors: gruvbox, so code reads the same here and on cachevector.org. */
+:root,
+[data-theme="light"] {
+  --hl-comment: var(--cv-fg-subtle);
+  --hl-arg: #79740e;
+  --hl-operator: var(--cv-fg-subtle);
+  --hl-value: #b57614;
+  --hl-keyword: #076678;
+  --hl-string: #af3a03;
+  --hl-builtin: #427b58;
+  --term-warn: #b57614;
+}
+
 [data-theme="dark"] {
-  color-scheme: dark;
-  --bg-primary: #0f1117;
-  --bg-secondary: #151821;
-  --bg-tertiary: #1a1d28;
-  --bg-elevated: #1f2330;
-  --bg-code: #151821;
-
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  --text-inverse: #0f1117;
-
-  --border-primary: rgba(148, 163, 184, 0.2);
-  --border-secondary: rgba(148, 163, 184, 0.12);
-  --border-accent: var(--brand-800);
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
-
-  --accent: var(--brand-300);
-  --accent-hover: var(--brand-200);
-  --accent-light: rgba(177, 98, 134, 0.2);
-  --accent-muted: rgba(177, 98, 134, 0.12);
-
-  --nav-bg: rgba(15, 17, 23, 0.94);
-  --nav-border: var(--border-secondary);
-
-  --code-bg: #151821;
-  --code-text: var(--text-secondary);
-  --code-border: var(--border-primary);
-
-  --hero-gradient: radial-gradient(circle at top, rgba(177, 98, 134, 0.25), transparent 55%),
-    radial-gradient(circle at bottom, rgba(15, 23, 42, 0.4), transparent 70%);
-  --section-alt-bg: var(--bg-secondary);
-
-  --grid-color: rgba(31, 41, 55, 0.25);
-
-  --hl-comment: #94a3b8;
-  --hl-arg:     #22c55e;
-  --hl-operator:#e5e7eb;
-  --hl-value:   #eab308;
-  --hl-keyword: #a855f7;
-  --hl-string:  #f97316;
-  --hl-builtin: #0ea5e9;
+  --hl-arg: #b8bb26;
+  --hl-value: #fabd2f;
+  --hl-keyword: #83a598;
+  --hl-string: #fe8019;
+  --hl-builtin: #8ec07c;
+  --term-warn: #fabd2f;
 }
 
 /* ---- Reset & Base ---- */
@@ -144,6 +79,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 24px);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -155,23 +91,7 @@ body {
   background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: color var(--transition-base);
-  position: relative;
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  background-size: 80px 80px;
-  opacity: 0.3;
-  z-index: -1;
+  overflow-x: clip;
 }
 
 a {
@@ -189,10 +109,15 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  color: inherit;
 }
 
 code, pre {
   font-family: var(--font-mono);
+}
+
+ul {
+  list-style: none;
 }
 
 /* ---- Utility ---- */
@@ -200,64 +125,56 @@ code, pre {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 24px;
-  box-sizing: border-box;
+  padding: 0 var(--cv-gutter);
 }
 
-@media (max-width: 640px) {
-  .container {
-    padding: 0 16px;
-  }
-}
-
-/* Prevent horizontal overflow */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-
-main {
-  overflow-x: hidden;
-  max-width: 100%;
-}
-
-/* ---- Typography Scale ---- */
+/* ---- Typography Scale (matches cachevector.org) ---- */
 h1, h2, h3, h4, h5, h6 {
-  line-height: 1.1;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
 }
 
 h1 {
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 300;
-  letter-spacing: -0.05em;
-  line-height: 0.95;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  letter-spacing: -0.035em;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
+  font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 h3 {
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+  font-size: 1.125rem;
 }
 
 p {
   color: var(--text-secondary);
-  line-height: 1.7;
-  font-size: 0.875rem;
+  line-height: 1.65;
 }
 
-/* Selection */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 ::selection {
-  background: var(--brand-500);
-  color: white;
+  background: var(--accent);
+  color: var(--cv-on-accent);
+}
+
+/* ---- Shared section rhythm ---- */
+.section {
+  padding: 64px 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+@media (min-width: 641px) {
+  .section {
+    padding: 88px 0;
+  }
 }
 
 /* ---- Docs syntax highlighting ---- */
@@ -273,20 +190,8 @@ p {
 .hl-string   { color: var(--hl-string); }
 .hl-builtin  { color: var(--hl-builtin); }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-tertiary);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

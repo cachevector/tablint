@@ -32,15 +32,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
+    min-width: 44px;
+    min-height: 44px;
     color: var(--text-secondary);
-    transition: color var(--transition-fast), background-color var(--transition-fast);
+    transition: color var(--transition-fast);
   }
 
   .theme-toggle:hover {
     color: var(--text-primary);
-    background-color: var(--bg-tertiary);
   }
 </style>

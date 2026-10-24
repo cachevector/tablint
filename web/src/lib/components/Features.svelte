@@ -1,4 +1,6 @@
 <script lang="ts">
+  import SectionHeader from './SectionHeader.svelte';
+
   const features = [
     {
       title: 'Intelligent Profiling',
@@ -33,15 +35,13 @@
   ];
 </script>
 
-<section id="features" class="features">
+<section id="features" class="section">
   <div class="container">
-    <div class="section-header">
-      <h2>Profile, debug, and fix<br />your datasets in seconds</h2>
-      <p class="section-subtitle">
-        Tablint catches critical issues before they derail your ML pipeline,
-        explains the problems, and suggests context-aware fixes.
-      </p>
-    </div>
+    <SectionHeader
+      index="01 / Features"
+      title="Profile, debug, and fix your datasets in seconds"
+      intro="Tablint catches critical issues before they derail your ML pipeline, explains the problems, and suggests context-aware fixes."
+    />
 
     <div class="features-grid">
       {#each features as feature}
@@ -82,82 +82,45 @@
 </section>
 
 <style>
-  .features {
-    padding: 120px 0;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 80px;
-  }
-
-  .section-subtitle {
-    max-width: 480px;
-    margin: 16px auto 0;
-    font-size: 1.05rem;
-    padding: 0 16px;
-  }
-
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--border-secondary);
+    border-left: 1px solid var(--border-secondary);
   }
 
   .feature-card {
-    padding: 28px;
-    border: 1px solid var(--border-secondary);
-    border-radius: var(--radius-md);
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-  }
-
-  .feature-card:hover {
-    border-color: var(--border-accent);
-    box-shadow: var(--shadow-sm);
+    padding: 28px 24px;
+    border-right: 1px solid var(--border-secondary);
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--bg-elevated);
   }
 
   .feature-icon {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-sm);
-    background: var(--accent-light);
     color: var(--accent);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .feature-title {
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
     margin-bottom: 8px;
   }
 
   .feature-description {
-    font-size: 0.875rem;
-    line-height: 1.65;
-    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.55;
   }
 
-  @media (max-width: 1024px) {
+  @media (min-width: 641px) {
     .features-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 640px) {
-    .features {
-      padding: 64px 0;
-    }
-
+  @media (min-width: 1025px) {
     .features-grid {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .section-header {
-      margin-bottom: 40px;
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>

@@ -2,148 +2,151 @@
   const currentYear = new Date().getFullYear();
 </script>
 
+<!-- Same structure as the cachevector.org footer, with Tablint's own columns. -->
 <footer class="footer">
   <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="/favicon.svg" width="32" height="32" alt="" />
-          <span class="footer-name">Tablint</span>
-        </div>
-        <p class="footer-tagline">Dataset Profiler & Debugger for Machine Learning</p>
+    <div class="grid">
+      <div class="brand">
+        <a href="/" class="brand-link" aria-label="Tablint home">
+          <img src="/favicon.svg" width="26" height="26" alt="" />
+          <span>Tablint</span>
+        </a>
+        <p class="tagline">Dataset profiler &amp; debugger for machine learning.</p>
+        <a href="https://cachevector.org" class="family">
+          <img src="/cachevector.svg" width="20" alt="" />
+          A CacheVector project
+        </a>
       </div>
 
-      <div class="footer-links">
-        <div class="footer-col">
-          <h4 class="footer-heading">Product</h4>
-          <a href="/#features">Features</a>
-          <a href="/#how-it-works">How It Works</a>
-          <a href="https://pypi.org/project/tablint/">PyPI</a>
-        </div>
-        <div class="footer-col">
-          <h4 class="footer-heading">Resources</h4>
-          <a href="/docs">Documentation</a>
-          <a href="https://github.com/cachevector/tablint">GitHub</a>
-          <a href="https://github.com/cachevector/tablint/blob/main/CONTRIBUTING.md">Contributing</a>
-        </div>
-        <div class="footer-col">
-          <h4 class="footer-heading">Legal</h4>
-          <a href="https://github.com/cachevector/tablint/blob/main/LICENSE">MIT License</a>
-        </div>
-      </div>
+      <nav class="col" aria-label="Product">
+        <h2 class="cv-eyebrow">Product</h2>
+        <ul>
+          <li><a href="/#features">Features</a></li>
+          <li><a href="/#how-it-works">How it works</a></li>
+          <li><a href="https://pypi.org/project/tablint/" target="_blank" rel="noopener noreferrer">PyPI</a></li>
+        </ul>
+      </nav>
+
+      <nav class="col" aria-label="Resources">
+        <h2 class="cv-eyebrow">Resources</h2>
+        <ul>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="https://github.com/cachevector/tablint" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="https://github.com/cachevector/tablint/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contributing</a></li>
+        </ul>
+      </nav>
+
+      <nav class="col" aria-label="CacheVector">
+        <h2 class="cv-eyebrow">CacheVector</h2>
+        <ul>
+          <li><a href="https://cachevector.org/projects">All projects</a></li>
+          <li><a href="https://cachevector.org/blog">Engineering notes</a></li>
+          <li><a href="https://discord.gg/spuz77bcJg" target="_blank" rel="noopener noreferrer">Discord</a></li>
+        </ul>
+      </nav>
     </div>
 
-    <div class="footer-bottom">
-      <p>&copy; {currentYear} Tablint. Open source under MIT License.</p>
+    <div class="bottom">
+      <span>&copy; {currentYear} CacheVector &middot; MIT License</span>
+      <span class="dots cv-halftone cv-halftone-fade" aria-hidden="true"></span>
+      <span>tablint.cachevector.org</span>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding: 64px 0 32px;
     border-top: 1px solid var(--border-secondary);
+    background: var(--cv-bg-sunken);
   }
 
-  .footer-inner {
+  .grid {
     display: grid;
-    grid-template-columns: 1.2fr 2fr;
-    gap: 48px;
-    margin-bottom: 48px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 24px;
+    padding: 56px 0 48px;
   }
 
-  .footer-logo {
-    display: flex;
+  .brand {
+    grid-column: 1 / -1;
+  }
+
+  .brand-link {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-
-  .footer-name {
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 500;
+    gap: 10px;
     color: var(--text-primary);
-    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
 
-  .footer-tagline {
-    font-size: 0.85rem;
-    color: var(--text-tertiary);
-    line-height: 1.6;
-    max-width: 280px;
+  .tagline {
+    margin-top: 16px;
+    max-width: 300px;
+    font-size: 0.875rem;
   }
 
-  .footer-links {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-  }
-
-  .footer-col {
-    display: flex;
-    flex-direction: column;
+  .family {
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
   }
 
-  .footer-heading {
-    font-size: 0.8rem;
-    font-weight: 600;
+  .family:hover {
     color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 4px;
   }
 
-  .footer-col a {
-    font-size: 0.85rem;
+  .col h2 {
+    margin-bottom: 14px;
+  }
+
+  .col li + li {
+    margin-top: 8px;
+  }
+
+  .col a {
+    font-size: 0.875rem;
     color: var(--text-secondary);
     transition: color var(--transition-fast);
   }
 
-  .footer-col a:hover {
-    color: var(--accent);
+  .col a:hover {
+    color: var(--text-primary);
   }
 
-  .footer-bottom {
-    padding-top: 24px;
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    padding: 20px 0 28px;
     border-top: 1px solid var(--border-secondary);
-  }
-
-  .footer-bottom p {
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     color: var(--text-tertiary);
   }
 
-  @media (max-width: 768px) {
-    .footer-inner {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-
-    .footer-links {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .dots {
+    flex: 1;
+    min-width: 40px;
+    height: 8px;
+    --cv-ht-color: var(--cv-fg-subtle);
+    --cv-ht-gap: 5px;
+    --cv-ht-size: 0.8px;
   }
 
-  @media (max-width: 480px) {
-    .footer {
-      padding: 40px 0 20px;
+  @media (min-width: 769px) {
+    .grid {
+      grid-template-columns: 2fr 1fr 1fr 1fr;
     }
 
-    .footer-inner {
-      gap: 32px;
-      margin-bottom: 32px;
-    }
-
-    .footer-links {
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    .footer-bottom p {
-      font-size: 0.75rem;
+    .brand {
+      grid-column: auto;
     }
   }
 </style>
