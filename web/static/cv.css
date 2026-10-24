@@ -1,0 +1,173 @@
+/* Vendored from cachevector.org/public/cv.css — keep in sync; edit upstream first. */
+/*
+ * CacheVector shared design tokens — https://cachevector.org/cv.css
+ *
+ * One stylesheet for cachevector.org and every project subdomain
+ * (tablint.cachevector.org, docs, ...). Link it before the site's own CSS:
+ *
+ *   <link rel="stylesheet" href="https://cachevector.org/cv.css">
+ *
+ * A project keeps the shared neutrals, type, and halftone texture, and only
+ * swaps its accent hue. Accents come from the gruvbox palette the logo uses:
+ *
+ *   :root { --cv-accent-light: #b16286; --cv-accent-dark: #d3869b; }  (tablint)
+ *
+ *   aqua   #427b58 / #8ec07c   (cachevector)
+ *   purple #b16286 / #d3869b   blue   #076678 / #83a598
+ *   orange #af3a03 / #fe8019   yellow #b57614 / #fabd2f
+ *
+ * Theme: dark mode is [data-theme="dark"] on <html>. The choice is stored in a
+ * `cv-theme` cookie on .cachevector.org so it carries across subdomains.
+ *
+ * Fonts: Epilogue (400-700) and DM Mono (400-500) from Google Fonts.
+ */
+
+:root {
+  --cv-accent-light: #427b58;
+  --cv-accent-dark: #8ec07c;
+
+  --cv-font-sans: "Epilogue", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cv-font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --cv-max-width: 1200px;
+  --cv-nav-height: 60px;
+  --cv-gutter: 16px;
+
+  --cv-bg: #fbfaf7;
+  --cv-bg-sunken: #f3f1eb;
+  --cv-bg-raised: #ffffff;
+  --cv-fg: #17160f;
+  --cv-fg-muted: #46443b;
+  --cv-fg-subtle: #75726a;
+  --cv-line: #e2ded4;
+  --cv-line-strong: #17160f;
+  --cv-dot: #17160f;
+  --cv-accent: var(--cv-accent-light);
+  --cv-on-accent: #ffffff;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --cv-bg: #0f0f0d;
+  --cv-bg-sunken: #161613;
+  --cv-bg-raised: #1b1b18;
+  --cv-fg: #edece6;
+  --cv-fg-muted: #c2bfb5;
+  --cv-fg-subtle: #8a877e;
+  --cv-line: #2b2a26;
+  --cv-line-strong: #edece6;
+  --cv-dot: #edece6;
+  --cv-accent: var(--cv-accent-dark);
+  --cv-on-accent: #0f0f0d;
+
+  color-scheme: dark;
+}
+
+:root {
+  --cv-accent-soft: color-mix(in srgb, var(--cv-accent) 12%, transparent);
+}
+
+@media (min-width: 641px) {
+  :root {
+    --cv-gutter: 24px;
+  }
+}
+
+/* ---- Halftone ---------------------------------------------------------
+ * Dot-screen texture. Set --cv-ht-color, --cv-ht-size (dot radius) and
+ * --cv-ht-gap (cell size); fade it with a mask, e.g. .cv-halftone-fade.
+ */
+
+.cv-halftone {
+  --cv-ht-color: var(--cv-dot);
+  --cv-ht-size: 1px;
+  --cv-ht-gap: 6px;
+  background-image: radial-gradient(
+    circle,
+    var(--cv-ht-color) var(--cv-ht-size),
+    transparent calc(var(--cv-ht-size) + 0.6px)
+  );
+  background-size: var(--cv-ht-gap) var(--cv-ht-gap);
+}
+
+.cv-halftone-fade {
+  -webkit-mask-image: linear-gradient(to right, #000, transparent);
+  mask-image: linear-gradient(to right, #000, transparent);
+}
+
+/* ---- Small shared primitives ------------------------------------------ */
+
+.cv-container {
+  width: 100%;
+  max-width: var(--cv-max-width);
+  margin: 0 auto;
+  padding: 0 var(--cv-gutter);
+}
+
+.cv-eyebrow {
+  font-family: var(--cv-font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cv-fg-subtle);
+}
+
+.cv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--cv-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--cv-line);
+  color: var(--cv-fg-subtle);
+  white-space: nowrap;
+}
+
+.cv-chip-accent {
+  border-color: color-mix(in srgb, var(--cv-accent) 45%, transparent);
+  color: var(--cv-accent);
+  background: var(--cv-accent-soft);
+}
+
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  font-family: var(--cv-font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid var(--cv-line-strong);
+  background: var(--cv-fg);
+  color: var(--cv-bg);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.cv-btn:hover {
+  background: var(--cv-accent);
+  border-color: var(--cv-accent);
+  color: var(--cv-on-accent);
+}
+
+.cv-btn-ghost {
+  background: transparent;
+  color: var(--cv-fg);
+  border-color: var(--cv-line);
+  font-family: var(--cv-font-mono);
+  font-weight: 400;
+}
+
+.cv-btn-ghost:hover {
+  background: transparent;
+  color: var(--cv-fg);
+  border-color: var(--cv-line-strong);
+}

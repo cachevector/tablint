@@ -1,4 +1,6 @@
 <script lang="ts">
+  import SectionHeader from './SectionHeader.svelte';
+
   const checks = [
     { name: 'Outliers', desc: 'IQR-based outlier detection', icon: 'alert-triangle' },
     { name: 'Missing Values', desc: 'Columns with >50% missing data', icon: 'x-circle' },
@@ -16,15 +18,14 @@
   ];
 </script>
 
-<section class="checks-section">
+<section class="section">
   <div class="container">
-    <div class="section-header">
-      <h2>13 built-in checks.<br />Every issue caught.</h2>
-      <p class="section-subtitle">
-        From basic data quality to ML-specific concerns,
-        Tablint runs a comprehensive audit on your dataset.
-      </p>
-    </div>
+    <SectionHeader
+      index="04 / Checks"
+      title="13 built-in checks. Every issue caught."
+      intro="From basic data quality to ML-specific concerns, Tablint runs a comprehensive audit on your dataset."
+      link={{ href: '/docs#checks', label: 'Full check reference' }}
+    />
 
     <div class="checks-grid">
       {#each checks as check}
@@ -95,27 +96,11 @@
 </section>
 
 <style>
-  .checks-section {
-    padding: 120px 0;
-    background: var(--section-alt-bg);
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 80px;
-  }
-
-  .section-subtitle {
-    max-width: 440px;
-    margin: 16px auto 0;
-    font-size: 1.05rem;
-    padding: 0 16px;
-  }
-
   .checks-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--border-secondary);
+    border-left: 1px solid var(--border-secondary);
   }
 
   .check-card {
@@ -123,25 +108,20 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-secondary);
-    border-radius: var(--radius-sm);
-    transition: border-color var(--transition-fast);
+    border-right: 1px solid var(--border-secondary);
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--bg-elevated);
+    transition: background-color var(--transition-fast);
   }
 
   .check-card:hover {
-    border-color: var(--border-accent);
+    background: var(--accent-light);
   }
 
   .check-icon {
     flex-shrink: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    background: var(--accent-light);
+    padding-top: 2px;
     color: var(--accent);
   }
 
@@ -153,40 +133,26 @@
   }
 
   .check-name {
-    font-size: 0.85rem;
-    font-weight: 550;
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--text-primary);
   }
 
   .check-desc {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: var(--text-tertiary);
     line-height: 1.4;
   }
 
-  @media (max-width: 1024px) {
-    .checks-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
+  @media (min-width: 541px) {
     .checks-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 480px) {
-    .checks-section {
-      padding: 64px 0;
-    }
-
+  @media (min-width: 900px) {
     .checks-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .section-header {
-      margin-bottom: 40px;
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 </style>

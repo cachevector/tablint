@@ -1,18 +1,56 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Navbar from '$lib/components/Navbar.svelte';
   import Footer from '$lib/components/Footer.svelte';
+
+  let content: HTMLElement;
+  let activeId = $state('overview');
+
+  onMount(() => {
+    const sections = Array.from(content.querySelectorAll<HTMLElement>(':scope > section[id]'));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length) activeId = visible[0].target.id;
+      },
+      { rootMargin: '-80px 0px -65% 0px' }
+    );
+    sections.forEach((section) => observer.observe(section));
+
+    // Copy buttons on every code block.
+    const buttons: HTMLButtonElement[] = [];
+    content.querySelectorAll('pre').forEach((pre) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-btn';
+      button.textContent = 'Copy';
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.querySelector('code')?.innerText ?? '');
+          button.textContent = 'Copied';
+          setTimeout(() => (button.textContent = 'Copy'), 1500);
+        } catch {}
+      });
+      pre.appendChild(button);
+      buttons.push(button);
+    });
+
+    return () => {
+      observer.disconnect();
+      buttons.forEach((b) => b.remove());
+    };
+  });
 </script>
 
 <Navbar />
 
 <main class="docs">
   <section class="docs-hero">
-    <div class="container docs-hero-inner">
-      <div class="docs-kicker">Documentation</div>
+    <div class="container">
+      <p class="cv-eyebrow docs-kicker"><span class="square"></span>Documentation <span class="cv-chip">v0.1.0b1</span></p>
       <h1>Learn Tablint in minutes, not hours.</h1>
-      <p>
-        A focused guide to installing, running, and integrating Tablint into your ML workflows. Built to match the
-        minimal, calm UI of the rest of the site.
+      <p class="docs-lede">
+        A focused guide to installing, running, and integrating Tablint into your ML workflows.
       </p>
     </div>
   </section>
@@ -22,23 +60,23 @@
       <aside class="docs-nav" aria-label="Documentation sections">
         <div class="docs-nav-group">
           <div class="docs-nav-label">Getting started</div>
-          <a href="#overview">Overview</a>
-          <a href="#installation">Installation</a>
-          <a href="#quickstart-cli">Quickstart (CLI)</a>
-          <a href="#quickstart-python">Quickstart (Python)</a>
+          <a href="#overview" class:active={activeId === 'overview'}>Overview</a>
+          <a href="#installation" class:active={activeId === 'installation'}>Installation</a>
+          <a href="#quickstart-cli" class:active={activeId === 'quickstart-cli'}>Quickstart (CLI)</a>
+          <a href="#quickstart-python" class:active={activeId === 'quickstart-python'}>Quickstart (Python)</a>
         </div>
         <div class="docs-nav-group">
           <div class="docs-nav-label">Deep dive</div>
-          <a href="#reports">Reports</a>
-          <a href="#cli-reference">CLI reference</a>
-          <a href="#python-api">Python API</a>
-          <a href="#checks">Available checks</a>
-          <a href="#configuration">Configuration</a>
-          <a href="#contributing">Contributing</a>
+          <a href="#reports" class:active={activeId === 'reports'}>Reports</a>
+          <a href="#cli-reference" class:active={activeId === 'cli-reference'}>CLI reference</a>
+          <a href="#python-api" class:active={activeId === 'python-api'}>Python API</a>
+          <a href="#checks" class:active={activeId === 'checks'}>Available checks</a>
+          <a href="#configuration" class:active={activeId === 'configuration'}>Configuration</a>
+          <a href="#contributing" class:active={activeId === 'contributing'}>Contributing</a>
         </div>
       </aside>
 
-      <article class="docs-content">
+      <article class="docs-content" bind:this={content}>
         <section id="overview">
           <h2>Overview</h2>
           <p>
@@ -402,7 +440,7 @@ summary = analyzer.analyze()</code></pre>
             <p>Config files can be written in YAML (<code>.yaml</code> / <code>.yml</code>), TOML (<code>.toml</code>),
             or JSON (<code>.json</code>). Only the keys you specify are changed; everything else falls back to
             defaults.</p>
-            <pre data-lang="bash"><code><span class="hl-comment"># tablint.yaml</span>
+            <pre data-lang="yaml"><code><span class="hl-comment"># tablint.yaml</span>
 missing_values:
   warning: 0.3
   critical: 0.6
@@ -458,43 +496,40 @@ summary = analyzer.analyze()</code></pre>
 <style>
   .docs {
     padding-top: var(--nav-height);
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
 
   .docs-hero {
-    padding: 72px 0 40px;
-    background: var(--hero-gradient);
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border-secondary);
   }
 
-  .docs-hero-inner {
-    text-align: center;
+  .docs-hero h1 {
+    max-width: 18ch;
+    margin-bottom: 16px;
   }
 
-  .docs-hero-inner h1 {
-    font-size: clamp(2.1rem, 4vw, 3rem);
-    font-weight: 300;
-    letter-spacing: -0.05em;
-    margin-bottom: 14px;
-  }
-
-  .docs-hero-inner p {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
+  .docs-lede {
+    max-width: 560px;
+    font-size: 1.0625rem;
   }
 
   .docs-kicker {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 12px;
+    gap: 10px;
     margin-bottom: 20px;
-    border-radius: 999px;
-    border: 1px solid var(--border-secondary);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--text-tertiary);
+  }
+
+  .square {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+  }
+
+  .docs-kicker .cv-chip {
+    text-transform: none;
   }
 
   .docs-body {
@@ -512,14 +547,12 @@ summary = analyzer.analyze()</code></pre>
 
   .docs-nav {
     position: sticky;
-    top: calc(var(--nav-height) + 24px);
+    top: calc(var(--nav-height) + 32px);
     align-self: flex-start;
-    padding-right: 8px;
-    border-right: 1px solid var(--border-secondary);
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    font-size: 0.8rem;
+    gap: 28px;
+    font-size: 0.875rem;
   }
 
   .docs-nav-group {
@@ -528,31 +561,42 @@ summary = analyzer.analyze()</code></pre>
     gap: 4px;
   }
 
+  .docs-nav-group {
+    border-left: 1px solid var(--border-secondary);
+  }
+
   .docs-nav-label {
-    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.06em;
     color: var(--text-tertiary);
-    margin-bottom: 4px;
+    padding-left: 14px;
+    margin-bottom: 6px;
   }
 
   .docs-nav a {
-    padding: 4px 0;
+    padding: 4px 0 4px 14px;
+    margin-left: -1px;
+    border-left: 1.5px solid transparent;
     color: var(--text-secondary);
-    text-decoration: none;
-    border-radius: 4px;
-    transition: color var(--transition-fast);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
   }
 
   .docs-nav a:hover {
     color: var(--text-primary);
   }
 
+  .docs-nav a.active {
+    color: var(--text-primary);
+    border-left-color: var(--accent);
+  }
+
   .docs-content {
     display: flex;
     flex-direction: column;
-    gap: 64px;
-    font-size: 0.9rem;
+    gap: 72px;
+    font-size: 0.9375rem;
     max-width: 100%;
     min-width: 0;
   }
@@ -562,20 +606,43 @@ summary = analyzer.analyze()</code></pre>
   }
 
   .docs-content h2 {
-    font-size: 1.1rem;
-    letter-spacing: -0.04em;
+    font-size: 1.5rem;
     margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-secondary);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-primary);
   }
 
   .docs-content h3 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: -0.02em;
+    font-size: 1rem;
     color: var(--text-primary);
     margin-bottom: 12px;
+  }
+
+  .docs-content :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .docs-content ul {
+    list-style: square;
+  }
+
+  .docs-content li::marker {
+    color: var(--text-tertiary);
+  }
+
+  .docs-content :not(pre) > code {
+    font-size: 0.85em;
+    padding: 1px 5px;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    color: var(--text-primary);
+  }
+
+  .docs-content h3 > code {
+    font-size: 0.9em;
   }
 
   .docs-content p {
@@ -603,10 +670,8 @@ summary = analyzer.analyze()</code></pre>
 
   .docs-card {
     border: 1px solid var(--border-secondary);
-    border-radius: 0px;
-    padding: 28px 32px;
-    background: transparent;
-    transition: border-color var(--transition-fast);
+    padding: 24px 28px;
+    background: var(--bg-elevated);
   }
 
   .docs-card h3 {
@@ -625,10 +690,6 @@ summary = analyzer.analyze()</code></pre>
     margin-top: 0;
   }
 
-  .docs-card:hover {
-    border-color: var(--border-accent);
-  }
-
   .docs-card + .docs-card {
     margin-top: 24px;
   }
@@ -636,9 +697,9 @@ summary = analyzer.analyze()</code></pre>
   .docs-grid-2 {
     display: grid;
     grid-template-columns: repeat(2, minmax(280px, 1fr));
-    gap: 40px;
+    gap: 24px;
     margin-top: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .docs-grid-2 .docs-card {
@@ -668,7 +729,10 @@ summary = analyzer.analyze()</code></pre>
   }
 
   .docs-note {
-    font-size: 0.8rem;
+    margin-top: 20px;
+    padding-left: 14px;
+    border-left: 2px solid var(--accent);
+    font-size: 0.875rem;
     color: var(--text-tertiary);
   }
 
@@ -682,11 +746,12 @@ summary = analyzer.analyze()</code></pre>
     margin: 0;
     margin-top: 12px;
     margin-bottom: 20px;
-    padding: 16px 20px;
-    border-radius: 0px;
-    border: 1px solid var(--border-secondary);
+    padding: 30px 20px 16px;
+    border: 1px solid var(--code-border);
     background: var(--bg-code);
-    font-size: 0.8rem;
+    color: var(--code-text);
+    font-size: 0.8125rem;
+    line-height: 1.65;
     overflow-x: auto;
     overflow-y: hidden;
     position: relative;
@@ -722,69 +787,55 @@ summary = analyzer.analyze()</code></pre>
 
   pre::before {
     position: absolute;
-    inset-block-start: 6px;
-    inset-inline-end: 10px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border-secondary);
-    font-size: 0.65rem;
-    letter-spacing: 0.16em;
+    top: 8px;
+    left: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-tertiary);
-    background: var(--bg-secondary);
   }
 
   pre[data-lang="bash"]::before {
-    content: 'Bash';
+    content: 'bash';
   }
 
   pre[data-lang="python"]::before {
-    content: 'Python';
+    content: 'python';
   }
 
-  /* Syntax highlighting — light-mode defaults */
-  .hl-comment {
-    color: #64748b;
+  pre[data-lang="yaml"]::before {
+    content: 'yaml';
   }
 
-  .hl-command {
-    color: var(--accent);
+  pre :global(.copy-btn) {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0;
+    transition: opacity var(--transition-fast), color var(--transition-fast);
   }
 
-  .hl-arg,
-  .hl-flag {
-    color: #15803d;
+  pre:hover :global(.copy-btn),
+  pre :global(.copy-btn:focus-visible) {
+    opacity: 1;
   }
 
-  .hl-operator {
-    color: #6b7280;
+  pre :global(.copy-btn:hover) {
+    color: var(--text-primary);
   }
 
-  .hl-value {
-    color: #a16207;
+  @media (hover: none) {
+    pre :global(.copy-btn) {
+      opacity: 1;
+    }
   }
-
-  .hl-keyword {
-    color: #7c3aed;
-  }
-
-  .hl-string {
-    color: #c2410c;
-  }
-
-  .hl-builtin {
-    color: #0369a1;
-  }
-
-  /* Syntax highlighting — dark-mode overrides */
-  :global([data-theme="dark"]) .hl-comment { color: #94a3b8; }
-  :global([data-theme="dark"]) .hl-arg,
-  :global([data-theme="dark"]) .hl-flag { color: #22c55e; }
-  :global([data-theme="dark"]) .hl-operator { color: #e5e7eb; }
-  :global([data-theme="dark"]) .hl-value { color: #eab308; }
-  :global([data-theme="dark"]) .hl-keyword { color: #a855f7; }
-  :global([data-theme="dark"]) .hl-string { color: #f97316; }
-  :global([data-theme="dark"]) .hl-builtin { color: #0ea5e9; }
 
   @media (max-width: 960px) {
     .docs-layout {
@@ -794,12 +845,11 @@ summary = analyzer.analyze()</code></pre>
 
     .docs-nav {
       position: static;
-      border-right: none;
+      padding-bottom: 24px;
       border-bottom: 1px solid var(--border-secondary);
-      padding-bottom: 12px;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 24px;
     }
 
     .docs-nav-group {
@@ -813,12 +863,8 @@ summary = analyzer.analyze()</code></pre>
 
   @media (max-width: 640px) {
     .docs-hero {
-      padding-top: 56px;
+      padding-top: 48px;
       padding-bottom: 32px;
-    }
-
-    .docs-hero-inner {
-      padding: 0 16px;
     }
 
     .docs-grid-2 {
@@ -834,8 +880,12 @@ summary = analyzer.analyze()</code></pre>
     }
 
     pre {
-      padding: 12px 16px;
-      font-size: 0.7rem;
+      padding: 28px 14px 12px;
+      font-size: 0.72rem;
+    }
+
+    pre::before {
+      left: 14px;
     }
   }
 </style>

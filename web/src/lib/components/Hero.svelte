@@ -1,42 +1,48 @@
 <script lang="ts">
+  let copied = $state(false);
+
+  async function copyInstall() {
+    try {
+      await navigator.clipboard.writeText('pip install tablint');
+      copied = true;
+      setTimeout(() => (copied = false), 1600);
+    } catch {}
+  }
 </script>
 
 <section class="hero">
   <div class="container hero-inner">
-    <div class="hero-badge">
-      <span class="badge">v0.1.0b1</span>
-    </div>
+    <div class="copy">
+      <p class="cv-eyebrow eyebrow">
+        <span class="square"></span>Dataset profiler &amp; debugger
+        <span class="cv-chip cv-chip-accent version">v0.1.0b1</span>
+      </p>
 
-    <h1 class="hero-title">
-      Dataset Profiler &amp; Debugger<br class="hero-br" />for Machine Learning.
-    </h1>
+      <h1>Lint your datasets before they reach training.</h1>
 
-    <p class="hero-subtitle">
-      Catch critical dataset issues before they derail your ML pipeline.
-      Profile, debug, and fix — all in one command.
-    </p>
+      <p class="subtitle">
+        Catch critical dataset issues before they derail your ML pipeline.
+        Profile, debug, and fix — all in one command.
+      </p>
 
-    <div class="hero-actions">
-      <a href="/docs#installation" class="btn-hero btn-hero-primary">
-        <img src="/favicon.svg" width="20" height="20" alt="" />
-        Get Started
-      </a>
-      <a href="https://github.com/cachevector/tablint" class="btn-hero btn-hero-secondary">
-        View on GitHub
-      </a>
-    </div>
-
-    <div class="hero-terminal">
-      <div class="terminal-chrome">
-        <div class="terminal-dots">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
-        </div>
-        <span class="terminal-title">terminal</span>
+      <div class="actions">
+        <a href="/docs#installation" class="cv-btn">Get started <span aria-hidden="true">&rarr;</span></a>
+        <button type="button" class="cv-btn cv-btn-ghost" onclick={copyInstall} aria-live="polite">
+          <span class="prompt" aria-hidden="true">$</span>
+          {copied ? 'copied to clipboard' : 'pip install tablint'}
+        </button>
       </div>
-      <div class="terminal-body">
-        <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install tablint</span>
+    </div>
+
+    <div class="terminal-wrap">
+      <span class="print-shadow cv-halftone" aria-hidden="true"></span>
+      <div class="terminal">
+        <div class="terminal-chrome">
+          <span>~/project</span>
+          <span>tablint</span>
+        </div>
+        <div class="terminal-body">
+          <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install tablint</span>
 <span class="term-output">Successfully installed tablint-0.1.0b1</span>
 
 <span class="term-prompt">$</span> <span class="term-cmd">tablint scan train.csv --target Survived</span>
@@ -51,6 +57,7 @@
 <span class="term-accent">  ✗ outliers</span><span class="term-output">             Fare: 116 outliers</span>
 <span class="term-warn">  ⚠ high_cardinality</span><span class="term-output">    Ticket: 681 unique</span>
 <span class="term-warn">  ⚠ feature_correlation</span><span class="term-output"> SibSp ↔ Parch: 0.41</span></code></pre>
+        </div>
       </div>
     </div>
   </div>
@@ -58,150 +65,107 @@
 
 <style>
   .hero {
-    padding-top: calc(var(--nav-height) + 72px);
-    padding-bottom: 96px;
-    background: var(--hero-gradient);
-    text-align: center;
+    padding: calc(var(--nav-height) + 56px) 0 72px;
   }
 
   .hero-inner {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 56px;
     align-items: center;
-    gap: 40px;
-    padding: 0 24px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
   }
 
-  .badge {
-    display: inline-block;
-    padding: 4px 14px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--accent);
-    background: var(--accent-light);
-    border: 1px solid var(--border-accent);
-    border-radius: var(--radius-full);
-    letter-spacing: 0.02em;
-  }
-
-  .hero-title {
-    max-width: 640px;
-    margin-bottom: 18px;
-    padding: 0 8px;
-  }
-
-  .hero-subtitle {
-    max-width: 520px;
-    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-    color: var(--text-secondary);
-    margin-bottom: 28px;
-    line-height: 1.7;
-    padding: 0 12px;
-  }
-
-  .hero-actions {
+  .eyebrow {
     display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
     flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .btn-hero {
-    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    white-space: nowrap;
+    gap: 10px;
+    margin-bottom: 24px;
   }
 
-  .btn-hero-primary {
+  .square {
+    width: 8px;
+    height: 8px;
     background: var(--accent);
-    color: var(--text-inverse);
-    box-shadow: var(--shadow-sm);
   }
 
-  .btn-hero-primary:hover {
-    background: var(--accent-hover);
-    box-shadow: var(--shadow-md);
+  .version {
+    margin-left: 4px;
+    text-transform: none;
   }
 
-  .btn-hero-secondary {
-    color: var(--text-secondary);
-    border: 1px solid var(--border-primary);
-    background: var(--bg-primary);
+  h1 {
+    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    max-width: 13ch;
+    margin-bottom: 24px;
   }
 
-  .btn-hero-secondary:hover {
-    color: var(--text-primary);
-    border-color: var(--text-tertiary);
-    background: var(--bg-tertiary);
+  .subtitle {
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .actions button {
+    min-width: 200px;
+  }
+
+  .prompt {
+    color: var(--text-tertiary);
   }
 
   /* Terminal */
-  .hero-terminal {
-    width: 100%;
-    max-width: 640px;
-    border-radius: 22px;
-    overflow: hidden;
+  .terminal-wrap {
+    position: relative;
+    min-width: 0;
+    margin-right: 12px;
+    margin-bottom: 12px;
+  }
+
+  .print-shadow {
+    position: absolute;
+    inset: 12px -12px -12px 12px;
+    --cv-ht-color: var(--accent);
+    --cv-ht-gap: 5px;
+    --cv-ht-size: 1.1px;
+  }
+
+  .terminal {
+    position: relative;
     border: 1px solid var(--border-primary);
-    box-shadow: var(--shadow-lg);
-    text-align: left;
+    background: var(--bg-elevated);
   }
 
   .terminal-chrome {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    justify-content: space-between;
     padding: 10px 16px;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border-primary);
-  }
-
-  .terminal-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .dot-red { background: #ff5f57; }
-  .dot-yellow { background: #febc2e; }
-  .dot-green { background: #28c840; }
-
-  .terminal-title {
-    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--text-tertiary);
-    font-weight: 400;
   }
 
   .terminal-body {
     padding: 20px;
-    background: var(--bg-code);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .terminal-body pre {
     margin: 0;
-    font-size: 0.8rem;
-    line-height: 1.6;
-  }
-
-  .terminal-body code {
-    color: var(--text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.65;
   }
 
   .term-prompt {
@@ -223,60 +187,27 @@
   }
 
   .term-warn {
-    color: #d79921;
+    color: var(--term-warn);
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: 1000px) {
     .hero {
-      padding-top: calc(var(--nav-height) + 48px);
-      padding-bottom: 72px;
+      padding: calc(var(--nav-height) + 88px) 0 96px;
     }
 
-    .terminal-body {
-      padding: 16px;
-    }
-
-    .terminal-body pre {
-      font-size: 0.7rem;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
+    .hero-inner {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 64px;
     }
   }
 
   @media (max-width: 480px) {
-    .hero {
-      padding-top: calc(var(--nav-height) + 40px);
-      padding-bottom: 56px;
-    }
-
-    .hero-inner {
-      padding: 0 16px;
-    }
-
-    .hero-br {
-      display: none;
-    }
-
-    .btn-hero {
-      width: 100%;
-      max-width: 240px;
-      justify-content: center;
+    .terminal-body {
+      padding: 14px;
     }
 
     .terminal-body pre {
-      font-size: 0.62rem;
-    }
-
-    .terminal-body {
-      padding: 12px;
-    }
-
-    .hero-terminal {
-      max-width: 100%;
-      margin: 0 8px;
+      font-size: 0.66rem;
     }
   }
 </style>

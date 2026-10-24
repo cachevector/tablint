@@ -6,9 +6,23 @@ type Theme = 'light' | 'dark';
 // Safari doesn't repaint body.backgroundColor when CSS vars change on html,
 // so we set it directly in JS with the known values.
 const BG: Record<Theme, string> = {
-  light: '#fdfbff',
-  dark:  '#0f1117',
+  light: '#fbfaf7',
+  dark:  '#0f0f0d',
 };
+
+// Shared with cachevector.org and the other project subdomains.
+const COOKIE = 'cv-theme';
+
+function readCookie(): Theme | null {
+  const match = document.cookie.match(/(?:^|; )cv-theme=(light|dark)/);
+  return match ? (match[1] as Theme) : null;
+}
+
+function writeCookie(value: Theme) {
+  const host = window.location.hostname;
+  const domain = host === 'cachevector.org' || host.endsWith('.cachevector.org') ? '; domain=.cachevector.org' : '';
+  document.cookie = `${COOKIE}=${value}; path=/; max-age=31536000; SameSite=Lax${domain}`;
+}
 
 function safeLocalStorage(action: 'get' | 'set', key: string, value?: string): string | null {
   try {
@@ -27,7 +41,7 @@ function getSystemTheme(): Theme {
 
 function getStoredPreference(): 'light' | 'dark' | 'system' {
   if (!browser) return 'system';
-  return (safeLocalStorage('get', 'tablint-theme') as 'light' | 'dark' | 'system') || 'system';
+  return readCookie() || (safeLocalStorage('get', 'tablint-theme') as 'light' | 'dark' | 'system') || 'system';
 }
 
 let preference = $state<'light' | 'dark' | 'system'>(getStoredPreference());
@@ -48,6 +62,7 @@ function setPreference(pref: 'light' | 'dark' | 'system') {
   preference = pref;
   if (browser) {
     safeLocalStorage('set', 'tablint-theme', pref);
+    if (pref !== 'system') writeCookie(pref);
   }
   apply(pref === 'system' ? getSystemTheme() : pref);
 }

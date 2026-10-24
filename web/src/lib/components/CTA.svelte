@@ -1,24 +1,22 @@
 <script lang="ts">
 </script>
 
-<section class="cta-section">
+<section class="section">
   <div class="container">
     <div class="cta-card">
+      <span class="corner cv-halftone" aria-hidden="true"></span>
       <div class="cta-content">
+        <p class="cv-eyebrow">Get started</p>
         <h2>Stop debugging datasets manually.</h2>
         <p class="cta-subtitle">
           Install Tablint and get your first dataset audit in under a minute.
         </p>
-        <div class="cta-install">
-          <code>pip install tablint</code>
-        </div>
+      </div>
+      <div class="cta-side">
+        <code class="cta-install"><span aria-hidden="true">$&nbsp;</span>pip install tablint</code>
         <div class="cta-actions">
-          <a href="/docs#installation" class="cta-btn cta-btn-primary">
-            Get Started
-          </a>
-          <a href="https://github.com/cachevector/tablint" class="cta-btn cta-btn-secondary">
-            View on GitHub
-          </a>
+          <a href="/docs#installation" class="cv-btn">Read the docs <span aria-hidden="true">&rarr;</span></a>
+          <a href="https://github.com/cachevector/tablint" target="_blank" rel="noopener noreferrer" class="cv-btn cv-btn-ghost">GitHub &#8599;</a>
         </div>
       </div>
     </div>
@@ -26,106 +24,74 @@
 </section>
 
 <style>
-  .cta-section {
-    padding: 120px 0;
-    background: var(--section-alt-bg);
-  }
-
   .cta-card {
-    text-align: center;
-    padding: 64px 32px;
-    border: 1px solid var(--border-secondary);
-    border-radius: var(--radius-lg);
-    background: var(--bg-primary);
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding: 40px 24px;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-elevated);
+    overflow: hidden;
   }
 
-  .cta-content {
-    max-width: 480px;
-    margin: 0 auto;
+  .corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 260px;
+    height: 260px;
+    --cv-ht-color: var(--accent);
+    --cv-ht-gap: 6px;
+    --cv-ht-size: 1.2px;
+    -webkit-mask-image: radial-gradient(circle at top right, #000, transparent 70%);
+    mask-image: radial-gradient(circle at top right, #000, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-content,
+  .cta-side {
+    position: relative;
   }
 
   .cta-content h2 {
-    margin-bottom: 14px;
+    margin: 16px 0 12px;
   }
 
   .cta-subtitle {
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    margin-bottom: 28px;
-    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  .cta-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 16px;
   }
 
   .cta-install {
-    display: inline-flex;
-    padding: 10px 24px;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    color: var(--code-text);
     background: var(--code-bg);
     border: 1px solid var(--code-border);
-    border-radius: var(--radius-sm);
-    margin-bottom: 28px;
   }
 
-  .cta-install code {
-    font-size: 0.8rem;
-    color: var(--code-text);
-    font-weight: 400;
+  .cta-install span {
+    color: var(--text-tertiary);
   }
 
   .cta-actions {
     display: flex;
-    gap: 12px;
-    justify-content: center;
     flex-wrap: wrap;
+    gap: 12px;
   }
 
-  .cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    font-size: 0.925rem;
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-  }
-
-  .cta-btn-primary {
-    background: var(--accent);
-    color: var(--text-inverse);
-  }
-
-  .cta-btn-primary:hover {
-    background: var(--accent-hover);
-  }
-
-  .cta-btn-secondary {
-    color: var(--text-secondary);
-    border: 1px solid var(--border-primary);
-  }
-
-  .cta-btn-secondary:hover {
-    color: var(--text-primary);
-    border-color: var(--text-tertiary);
-    background: var(--bg-tertiary);
-  }
-
-  @media (max-width: 640px) {
-    .cta-section {
-      padding: 64px 0;
-    }
-
+  @media (min-width: 900px) {
     .cta-card {
-      padding: 40px 20px;
-    }
-
-    .cta-actions {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .cta-btn {
-      width: 100%;
-      max-width: 240px;
-      justify-content: center;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 48px;
+      padding: 56px 48px;
     }
   }
 </style>
